@@ -27,7 +27,9 @@ public class DashboardApp extends Application {
     public void start(Stage primaryStage) {
         operationsData = FXCollections.observableArrayList(MockDataProvider.getOperations());
 
+        // Layout principal con sidebar
         BorderPane root = new BorderPane();
+        root.setLeft(createSidebar());
         root.setTop(createTopBar());
         root.setCenter(createCenterContent());
         root.setRight(createRightPanel());
@@ -48,30 +50,64 @@ public class DashboardApp extends Application {
         topBar.setPadding(new Insets(15, 20, 15, 20));
         topBar.setAlignment(Pos.CENTER_LEFT);
 
-        Label title = new Label("GlobalFin | Panel de Operaciones");
-        title.getStyleClass().add("main-title");
-
-        MenuButton menuButton = new MenuButton("Menú");
-        menuButton.getItems().addAll(
-            new MenuItem("Resumen General"),
-            new MenuItem("Operaciones"),
-            new MenuItem("Clientes"),
-            new MenuItem("Alertas de Riesgo")
-        );
+        // Logo y título
+        Label logo = new Label("BK");
+        logo.getStyleClass().add("logo");
 
         TextField searchField = new TextField();
-        searchField.setPromptText("Buscar por ID, cliente o referencia...");
-        searchField.setPrefWidth(300);
+        searchField.setPromptText("Buscar por nombre, DNI o cuenta...");
+        searchField.setPrefWidth(400);
         searchField.getStyleClass().add("search-field");
 
         Region spacer = new Region();
         HBox.setHgrow(spacer, Priority.ALWAYS);
 
-        Label userLabel = new Label("Usuario: Admin");
-        userLabel.getStyleClass().add("user-label");
+        // Icono de usuario
+        Button userButton = new Button("👤");
+        userButton.getStyleClass().add("user-button");
 
-        topBar.getChildren().addAll(title, menuButton, searchField, spacer, userLabel);
+        topBar.getChildren().addAll(logo, searchField, spacer, userButton);
         return topBar;
+    }
+
+    private VBox createSidebar() {
+        VBox sidebar = new VBox(5);
+        sidebar.getStyleClass().add("sidebar");
+        sidebar.setPrefWidth(200);
+        sidebar.setPadding(new Insets(20, 0, 20, 0));
+
+        Label menuTitle = new Label("MENÚ PRINCIPAL");
+        menuTitle.getStyleClass().add("menu-title");
+        menuTitle.setPadding(new Insets(0, 15, 20, 15));
+
+        Button btnInicio = createSidebarButton("🏠  Inicio", true);
+        Button btnClientes = createSidebarButton("👥  Clientes", false);
+        Button btnTransacciones = createSidebarButton("💳  Transacciones", false);
+        Button btnHistorial = createSidebarButton("📜  Historial", false);
+        Button btnIncidencias = createSidebarButton("⚠️  Incidencias", false);
+
+        sidebar.getChildren().addAll(
+            menuTitle,
+            btnInicio,
+            btnClientes,
+            btnTransacciones,
+            btnHistorial,
+            btnIncidencias
+        );
+
+        return sidebar;
+    }
+
+    private Button createSidebarButton(String text, boolean active) {
+        Button button = new Button(text);
+        button.getStyleClass().add("sidebar-button");
+        if (active) {
+            button.getStyleClass().add("active");
+        }
+        button.setMaxWidth(Double.MAX_VALUE);
+        button.setAlignment(Pos.CENTER_LEFT);
+        button.setPadding(new Insets(12, 15, 12, 15));
+        return button;
     }
 
     private VBox createCenterContent() {
