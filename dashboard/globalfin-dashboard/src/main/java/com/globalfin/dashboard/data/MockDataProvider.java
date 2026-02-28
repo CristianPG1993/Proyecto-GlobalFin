@@ -2,6 +2,8 @@ package com.globalfin.dashboard.data;
 
 import com.globalfin.dashboard.model.Operation;
 import com.globalfin.dashboard.model.DashboardMetrics;
+import com.globalfin.dashboard.service.SupabaseService;
+import com.google.gson.JsonObject;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -10,8 +12,55 @@ import java.util.List;
 public class MockDataProvider {
 
     public static List<Operation> getOperations() {
-        List<Operation> operations = new ArrayList<>();
+        // Intentar obtener datos desde Supabase
+        try {
+            List<JsonObject> supabaseOperations = SupabaseService.getOperaciones();
+            List<Operation> operations = new ArrayList<>();
+            
+            for (JsonObject op : supabaseOperations) {
+                Operation operation = new Operation(
+                    op.get("id").getAsString(),
+                    getClienteName(op.get("id_cliente").getAsString()),
+                    op.get("id_cliente").getAsString(),
+                    op.get("monto").getAsDouble(),
+                    Operation.OperationStatus.valueOf(op.get("estado").getAsString().toUpperCase()),
+                    LocalDateTime.now(),
+                    Operation.OperationType.valueOf(op.get("tipo").getAsString().toUpperCase()),
+                    Operation.RiskLevel.valueOf(op.get("nivel_riesgo").getAsString().toUpperCase()),
+                    op.get("canal").getAsString()
+                );
+                operations.add(operation);
+            }
+            
+            // Si conseguimos datos de Supabase, retornar
+            if (!operations.isEmpty()) {
+                System.out.println("✓ Datos cargados desde Supabase (" + operations.size() + " operaciones)");
+                return operations;
+            }
+        } catch (Exception e) {
+            System.out.println("⚠ No se pudo conectar a Supabase, usando datos mock: " + e.getMessage());
+        }
         
+        // Si falla Supabase, usar datos mock
+        return getMockOperations();
+    }
+
+    private static String getClienteName(String clienteId) {
+        // Intentar obtener nombre desde Supabase
+        try {
+            JsonObject cliente = SupabaseService.getClienteById(clienteId);
+            if (cliente != null && cliente.has("nombre")) {
+                return cliente.get("nombre").getAsString();
+            }
+        } catch (Exception e) {
+            // Ignorar error, usar nombre por defecto
+        }
+        return "Cliente " + clienteId;
+    }
+
+    private static List<Operation> getMockOperations() {
+        List<Operation> operations = new ArrayList<>();
+
         operations.add(new Operation(
             "OP-10245",
             "Ana García López",

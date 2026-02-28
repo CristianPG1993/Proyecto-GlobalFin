@@ -1,0 +1,29 @@
+# ninja log v5
+4	27799	0	/workspaces/Proyecto-GlobalFin/App movil/globalfin_app/linux/flutter/ephemeral/libflutter_linux_gtk.so	8a0c753d1ee7d68c
+4	27799	0	/workspaces/Proyecto-GlobalFin/App movil/globalfin_app/linux/flutter/ephemeral/flutter_linux/fl_basic_message_channel.h	8a0c753d1ee7d68c
+4	27799	0	/workspaces/Proyecto-GlobalFin/App movil/globalfin_app/linux/flutter/ephemeral/flutter_linux/fl_binary_codec.h	8a0c753d1ee7d68c
+4	27799	0	/workspaces/Proyecto-GlobalFin/App movil/globalfin_app/linux/flutter/ephemeral/flutter_linux/fl_binary_messenger.h	8a0c753d1ee7d68c
+4	27799	0	/workspaces/Proyecto-GlobalFin/App movil/globalfin_app/linux/flutter/ephemeral/flutter_linux/fl_dart_project.h	8a0c753d1ee7d68c
+4	27799	0	/workspaces/Proyecto-GlobalFin/App movil/globalfin_app/linux/flutter/ephemeral/flutter_linux/fl_engine.h	8a0c753d1ee7d68c
+4	27799	0	/workspaces/Proyecto-GlobalFin/App movil/globalfin_app/linux/flutter/ephemeral/flutter_linux/fl_json_message_codec.h	8a0c753d1ee7d68c
+4	27799	0	/workspaces/Proyecto-GlobalFin/App movil/globalfin_app/linux/flutter/ephemeral/flutter_linux/fl_json_method_codec.h	8a0c753d1ee7d68c
+4	27799	0	/workspaces/Proyecto-GlobalFin/App movil/globalfin_app/linux/flutter/ephemeral/flutter_linux/fl_message_codec.h	8a0c753d1ee7d68c
+4	27799	0	/workspaces/Proyecto-GlobalFin/App movil/globalfin_app/linux/flutter/ephemeral/flutter_linux/fl_method_call.h	8a0c753d1ee7d68c
+4	27799	0	/workspaces/Proyecto-GlobalFin/App movil/globalfin_app/linux/flutter/ephemeral/flutter_linux/fl_method_channel.h	8a0c753d1ee7d68c
+4	27799	0	/workspaces/Proyecto-GlobalFin/App movil/globalfin_app/linux/flutter/ephemeral/flutter_linux/fl_method_codec.h	8a0c753d1ee7d68c
+4	27799	0	/workspaces/Proyecto-GlobalFin/App movil/globalfin_app/linux/flutter/ephemeral/flutter_linux/fl_method_response.h	8a0c753d1ee7d68c
+4	27799	0	/workspaces/Proyecto-GlobalFin/App movil/globalfin_app/linux/flutter/ephemeral/flutter_linux/fl_plugin_registrar.h	8a0c753d1ee7d68c
+4	27799	0	/workspaces/Proyecto-GlobalFin/App movil/globalfin_app/linux/flutter/ephemeral/flutter_linux/fl_plugin_registry.h	8a0c753d1ee7d68c
+4	27799	0	/workspaces/Proyecto-GlobalFin/App movil/globalfin_app/linux/flutter/ephemeral/flutter_linux/fl_standard_message_codec.h	8a0c753d1ee7d68c
+4	27799	0	/workspaces/Proyecto-GlobalFin/App movil/globalfin_app/linux/flutter/ephemeral/flutter_linux/fl_standard_method_codec.h	8a0c753d1ee7d68c
+4	27799	0	/workspaces/Proyecto-GlobalFin/App movil/globalfin_app/linux/flutter/ephemeral/flutter_linux/fl_string_codec.h	8a0c753d1ee7d68c
+4	27799	0	/workspaces/Proyecto-GlobalFin/App movil/globalfin_app/linux/flutter/ephemeral/flutter_linux/fl_value.h	8a0c753d1ee7d68c
+4	27799	0	/workspaces/Proyecto-GlobalFin/App movil/globalfin_app/linux/flutter/ephemeral/flutter_linux/fl_view.h	8a0c753d1ee7d68c
+4	27799	0	/workspaces/Proyecto-GlobalFin/App movil/globalfin_app/linux/flutter/ephemeral/flutter_linux/flutter_linux.h	8a0c753d1ee7d68c
+4	27799	0	flutter/_phony_	8a0c753d1ee7d68c
+4	27799	0	/workspaces/Proyecto-GlobalFin/App movil/globalfin_app/build/linux/x64/debug/flutter/_phony_	8a0c753d1ee7d68c
+27800	30468	1772282280395363570	runner/CMakeFiles/globalfin_app.dir/main.cc.o	1cb53327bab6d283
+27801	30508	1772282280440363568	runner/CMakeFiles/globalfin_app.dir/__/flutter/generated_plugin_registrant.cc.o	3c0458aa5218fd0e
+27801	30583	1772282280523363565	runner/CMakeFiles/globalfin_app.dir/my_application.cc.o	ee8ecf6146cf37b0
+30583	30778	1772282280719363559	intermediates_do_not_run/globalfin_app	7c77331b2bd79045
+30778	31289	0	CMakeFiles/install.util	ea33607d6d806d09

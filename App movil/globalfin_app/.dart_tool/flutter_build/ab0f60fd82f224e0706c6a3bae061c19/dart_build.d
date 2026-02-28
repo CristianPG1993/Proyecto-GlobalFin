@@ -1,0 +1,1 @@
+ /workspaces/Proyecto-GlobalFin/App\ movil/globalfin_app/.dart_tool/flutter_build/ab0f60fd82f224e0706c6a3bae061c19/dart_build_result.json: 

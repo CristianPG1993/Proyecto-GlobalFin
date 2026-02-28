@@ -1,11 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import 'ui/home_screen.dart';
 import 'utils/app_colors.dart';
 import 'utils/app_text_styles.dart';
+import 'services/supabase_service.dart';
 
-void main() {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  
+  // Inicializar Supabase
+  await Supabase.initialize(
+    url: 'https://etlqpvghtqiqofepukqf.supabase.co',
+    anonKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV0bHFwdmdodHFpcW9mZXB1a3FmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzIyOTE2NTUsImV4cCI6MjA4Nzg2NzY1NX0.ulub2ohijz4Lcq6MtWr65ivmz9ehYnRonVA5osqnyMM',
+  );
   
   // Configurar barra de estado
   SystemChrome.setSystemUIOverlayStyle(

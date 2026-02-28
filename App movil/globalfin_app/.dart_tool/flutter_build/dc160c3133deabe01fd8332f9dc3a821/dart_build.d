@@ -1,0 +1,1 @@
+ /workspaces/Proyecto-GlobalFin/App\ movil/globalfin_app/.dart_tool/flutter_build/dc160c3133deabe01fd8332f9dc3a821/dart_build_result.json:  /opt/flutter/bin/cache/dart-sdk/version /workspaces/Proyecto-GlobalFin/App\ movil/globalfin_app/.dart_tool/package_config.json /workspaces/Proyecto-GlobalFin/App\ movil/globalfin_app/pubspec.yaml

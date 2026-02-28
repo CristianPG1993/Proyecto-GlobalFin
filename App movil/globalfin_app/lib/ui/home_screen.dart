@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../models/account.dart';
 import '../models/transaction.dart';
+import '../services/supabase_service.dart';
 import '../utils/app_colors.dart';
 import '../utils/app_text_styles.dart';
 import '../widgets/account_card.dart';
@@ -16,8 +17,78 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   int _selectedIndex = 0;
-  final List<Account> _accounts = Account.getMockAccounts();
-  final List<Transaction> _transactions = Transaction.getMockTransactions();
+  List<Account> _accounts = [];
+  List<Transaction> _transactions = [];
+  bool _isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadDataFromSupabase();
+  }
+
+  Future<void> _loadDataFromSupabase() async {
+    try {
+      // Intentar cargar desde Supabase
+      final clientesData = await SupabaseService.getClientes();
+      final transaccionesData = await SupabaseService.getTransacciones();
+
+      if (clientesData.isNotEmpty) {
+        // Convertir clientes a cuentas
+        setState(() {
+          _accounts = clientesData.map((cliente) {
+            return Account(
+              id: cliente['id'] ?? '',
+              nombre: '${cliente['nombre'] ?? ''} ${cliente['apellido'] ?? ''}',
+              tipo: 'Cuenta Principal',
+              balance: double.tryParse(cliente['saldo']?.toString() ?? '0') ?? 0.0,
+              icono: Icons.account_balance_wallet,
+              color: AppColors.primary,
+            );
+          }).toList();
+        });
+        print('✓ Datos de clientes cargados desde Supabase (${_accounts.length} cuentas)');
+      } else {
+        // Usar datos mock si no hay datos en Supabase
+        _useMockData();
+      }
+
+      if (transaccionesData.isNotEmpty) {
+        // Convertir transacciones
+        setState(() {
+          _transactions = transaccionesData.map((trx) {
+            return Transaction(
+              id: trx['id'] ?? '',
+              descripcion: trx['descripcion'] ?? 'Transacción',
+              monto: double.tryParse(trx['monto']?.toString() ?? '0') ?? 0.0,
+              fecha: trx['fecha'] ?? DateTime.now().toString(),
+              tipo: trx['tipo'] ?? 'Transfer',
+            );
+          }).toList();
+        });
+        print('✓ Transacciones cargadas desde Supabase (${_transactions.length})');
+      } else {
+        setState(() {
+          _transactions = Transaction.getMockTransactions();
+        });
+      }
+    } catch (e) {
+      print('⚠ Error al cargar desde Supabase: $e');
+      _useMockData();
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
+    }
+  }
+
+  void _useMockData() {
+    setState(() {
+      _accounts = Account.getMockAccounts();
+      _transactions = Transaction.getMockTransactions();
+    });
+    print('⚠ Usando datos mock (Supabase no disponible)');
+  }
 
   double get _totalBalance {
     return _accounts.fold(0, (sum, account) => sum + account.balance);
@@ -76,6 +147,16 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: _buildOperationButton(),
               ),
             ),
+            // Indicador de carga
+            if (_isLoading)
+              Container(
+                color: Colors.black54,
+                child: const Center(
+                  child: CircularProgressIndicator(
+                    valueColor: AlwaysStoppedAnimation<Color>(AppColors.accentGreen),
+                  ),
+                ),
+              ),
           ],
         ),
       ),

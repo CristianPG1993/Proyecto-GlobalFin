@@ -1,0 +1,15 @@
+/workspaces/Proyecto-GlobalFin/App movil/globalfin_app/build/linux/x64/debug/bundle/globalfin_app
+/workspaces/Proyecto-GlobalFin/App movil/globalfin_app/build/linux/x64/debug/bundle/data/icudtl.dat
+/workspaces/Proyecto-GlobalFin/App movil/globalfin_app/build/linux/x64/debug/bundle/lib/libflutter_linux_gtk.so
+/workspaces/Proyecto-GlobalFin/App movil/globalfin_app/build/linux/x64/debug/bundle/data/flutter_assets/shaders/stretch_effect.frag
+/workspaces/Proyecto-GlobalFin/App movil/globalfin_app/build/linux/x64/debug/bundle/data/flutter_assets/shaders/ink_sparkle.frag
+/workspaces/Proyecto-GlobalFin/App movil/globalfin_app/build/linux/x64/debug/bundle/data/flutter_assets/packages/cupertino_icons/assets/CupertinoIcons.ttf
+/workspaces/Proyecto-GlobalFin/App movil/globalfin_app/build/linux/x64/debug/bundle/data/flutter_assets/NOTICES
+/workspaces/Proyecto-GlobalFin/App movil/globalfin_app/build/linux/x64/debug/bundle/data/flutter_assets/kernel_blob.bin
+/workspaces/Proyecto-GlobalFin/App movil/globalfin_app/build/linux/x64/debug/bundle/data/flutter_assets/fonts/MaterialIcons-Regular.otf
+/workspaces/Proyecto-GlobalFin/App movil/globalfin_app/build/linux/x64/debug/bundle/data/flutter_assets/NativeAssetsManifest.json
+/workspaces/Proyecto-GlobalFin/App movil/globalfin_app/build/linux/x64/debug/bundle/data/flutter_assets/AssetManifest.bin
+/workspaces/Proyecto-GlobalFin/App movil/globalfin_app/build/linux/x64/debug/bundle/data/flutter_assets/NOTICES.Z
+/workspaces/Proyecto-GlobalFin/App movil/globalfin_app/build/linux/x64/debug/bundle/data/flutter_assets/version.json
+/workspaces/Proyecto-GlobalFin/App movil/globalfin_app/build/linux/x64/debug/bundle/data/flutter_assets/AssetManifest.bin.json
+/workspaces/Proyecto-GlobalFin/App movil/globalfin_app/build/linux/x64/debug/bundle/data/flutter_assets/FontManifest.json
