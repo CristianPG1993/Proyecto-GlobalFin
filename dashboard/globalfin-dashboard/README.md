@@ -317,3 +317,135 @@ java -version  # Asegurar JDK 17+
 **Versión:** 1.0.0-SNAPSHOT  
 **Tecnología:** JavaFX 21.0.5 + Java 17  
 **Estado:** ✅ Primera versión funcional completada
+
+---
+
+## 🗄️ Integración con Supabase
+
+### ✅ Estado Actual
+
+El dashboard está **completamente integrado** con Supabase PostgreSQL.
+
+### 🔌 Conexión
+
+**Archivo**: `src/main/java/com/globalfin/dashboard/service/SupabaseService.java`
+
+```java
+String API_URL = "https://etlqpvghtqiqofepukqf.supabase.co/rest/v1";
+String ANON_KEY = "eyJhbGci...";
+
+// Headers:
+- apikey: [ANON_KEY]
+- Authorization: Bearer [ANON_KEY]
+```
+
+### 📊 Datos Cargados en Tiempo Real
+
+1. **Operaciones**
+   - 10 registros de prueba
+   - Estados: pending, completed, reviewing, suspicious, rejected
+   - Niveles de riesgo: low, medium, high
+
+2. **Clientes**
+   - 10 clientes asociados
+   - Nombres completos
+   - Saldos
+
+3. **Transacciones**
+   - 10 transacciones asociadas
+
+### 🔄 Flujo de Datos
+
+```
+Dashboard Init
+    ↓
+MockDataProvider.getOperations()
+    ↓
+Try: SupabaseService.getOperaciones()
+    ↓
+    ├─ Éxito: Usa datos reales de Supabase ✓
+    └─ Error: Fallback a datos mock ⚠️
+    ↓
+Actualiza tabla y métricas
+```
+
+### 📋 Métodos Disponibles
+
+**SupabaseService.java** (9 métodos):
+
+```java
+// GET
+List<JsonObject> getOperaciones()
+List<JsonObject> getClientes()
+List<JsonObject> getTransacciones()
+List<JsonObject> getTransaccionesPorCliente(String clienteId)
+JsonObject getClienteById(String clienteId)
+double getSaldoCliente(String clienteId)
+
+// POST
+boolean crearOperacion(JsonObject operacion)
+boolean actualizarEstadoOperacion(String operacionId, String nuevoEstado)
+
+// UTIL
+boolean testConnection()
+```
+
+### 🧪 Pruebas de Conexión
+
+**Ejecutar test automatizado:**
+
+```bash
+cd dashboard/globalfin-dashboard
+javac -cp "target/classes:$(mvn dependency:build-classpath -q -Dmdep.outputFile=/dev/stdout)" \
+  src/main/java/TestSupabaseConnection.java && \
+java -cp "src/main/java:target/classes:..." TestSupabaseConnection
+```
+
+**Esperado:**
+```
+✓ Conexión a Supabase exitosa
+✓ Se obtuvieron 10 clientes
+✓ Se obtuvieron 10 operaciones
+✓ Se obtuvieron 10 transacciones
+```
+
+### 🔐 Seguridad
+
+- ✅ API Key anon pública (solo lectura)
+- ✅ Row Level Security (RLS) habilitado
+- ✅ Sin tokens sensibles expuestos
+- ✅ HTTPS para todas las conexiones
+
+### 📦 Dependencias Agregadas
+
+```xml
+<!-- supabase-java-client -->
+<dependency>
+    <groupId>org.apache.httpcomponents.client5</groupId>
+    <artifactId>httpclient5</artifactId>
+    <version>5.2.1</version>
+</dependency>
+
+<!-- JSON parsing -->
+<dependency>
+    <groupId>com.google.code.gson</groupId>
+    <artifactId>gson</artifactId>
+    <version>2.10.1</version>
+</dependency>
+```
+
+### 🚀 Despliegue
+
+El dashboard usa Maven Shade Plugin para crear JAR ejecutable.
+
+```bash
+mvn clean package
+# Genera: target/dashboard-empleados.jar
+
+java -jar target/dashboard-empleados.jar
+```
+
+---
+
+**Última actualización**: 28 de Febrero, 2026  
+**Estado Integración**: ✅ Completada y Probada

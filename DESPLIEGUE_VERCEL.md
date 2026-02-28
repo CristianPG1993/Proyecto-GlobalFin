@@ -1,221 +1,302 @@
 # 🚀 Desplegar GlobalFin en Vercel
 
-## 📱 App Móvil Flutter (Cliente)
+**Estado Actual**: ✅ Desplegado y sincronizado con Supabase
 
-La aplicación móvil de GlobalFin está lista para desplegarse en Vercel.
+## 📱 App Móvil Flutter en Vercel
 
-### Pasos para Desplegar:
+La aplicación Flutter está compilada y lista para despliegue automático en Vercel.
 
-#### 1️⃣ Desde GitHub (Recomendado)
+### ✨ Características Desplegadas
 
-**A. Hacer commit y push del código:**
+- 🏠 **Pantalla Principal** - Carga datos reales de Supabase
+- 💳 **Carrusel de Cuentas** - Clientes desde BD
+- 💰 **Operaciones Rápidas** - 6 acciones disponibles
+- 📊 **Transacciones** - Lista actualizada en tiempo real
+- 🔔 **Notificaciones** - Perfil de usuario
+- 📱 **Bottom Navigation** - 5 secciones
+- 🔄 **Loading Indicator** - Mientras carga de Supabase
+- ⚠️ **Fallback Automático** - Datos mock si falla BD
+
+### 🌐 Despliegue Automático
+
+**Vercel detecta cambios automáticamente cuando hagas:**
 
 ```bash
-cd /workspaces/Proyecto-GlobalFin
-
-# Agregar archivos
-git add "App movil/" vercel.json .vercelignore DESPLIEGUE_VERCEL.md
-
-# Commit
-git commit -m "feat: Configurar app Flutter para despliegue en Vercel"
-
-# Push
 git push origin main
 ```
 
-**B. Conectar con Vercel:**
-
-1. Ve a [vercel.com](https://vercel.com) e inicia sesión
-2. Click en **"Add New Project"**
-3. Importa tu repositorio: `CristianPG1993/Proyecto-GlobalFin`
-4. Vercel detectará automáticamente la configuración
-5. **Framework Preset**: Other
-6. **Build Command**: (se usará del vercel.json)
-7. **Output Directory**: `App movil/globalfin_app/build/web`
-8. Click en **"Deploy"**
-
-**C. Variables de entorno (opcional):**
-
-Si más adelante conectas con un backend real, puedes agregar:
+El despliegue se inicia automáticamente y publica en:
 ```
-API_URL=https://tu-backend.com/api
-```
-
-#### 2️⃣ Desde Vercel CLI
-
-```bash
-# Instalar Vercel CLI
-npm i -g vercel
-
-# Login
-vercel login
-
-# Desplegar (desde la raíz del proyecto)
-cd /workspaces/Proyecto-GlobalFin
-vercel
-
-# Para producción
-vercel --prod
+https://tu-dominio-vercel.vercel.app
 ```
 
 ### 📋 Verificación del Build
 
-El build ya está compilado en:
+El build ya está listo en:
 ```
-App movil/globalfin_app/build/web/
+/workspaces/Proyecto-GlobalFin/public/
 ```
 
 Contiene:
-- ✅ `index.html` - Entrada principal
+- ✅ `index.html` - Punto de entrada
 - ✅ `flutter.js` - Runtime de Flutter
-- ✅ `main.dart.js` - Código compilado
-- ✅ `assets/` - Fuentes, imágenes, etc.
-- ✅ `canvaskit/` - Renderizado Canvas
+- ✅ `flutter_bootstrap.js` - Bootstrap
+- ✅ `assets/` - Fuentes e imágenes
+- ✅ `canvaskit/` - Motor de renderizado
 
-### 🌐 URL de Producción
+### 🔌 Conexión con Supabase
 
-Una vez desplegado, tu app estará disponible en:
+**En producción, la app conecta a:**
+
 ```
-https://globalfin-app.vercel.app
+URL: https://etlqpvghtqiqofepukqf.supabase.co
+Método: REST API
+Autenticación: API Key (anon)
 ```
-(o el dominio que Vercel te asigne)
 
-### 🎯 Características Desplegadas
+**Datos que carga:**
+- Clientes (10 registros)
+- Transacciones (10 registros)
+- Operaciones (10 registros)
 
-La app incluye:
-- 🏠 **Pantalla Principal** con posición global
-- 💳 **Carrusel de Cuentas** (3 cuentas mock)
-- 💰 **Acciones Rápidas** (6 operaciones)
-- 📊 **Lista de Transacciones** (7 transacciones recientes)
-- 🔔 **Notificaciones** y perfil de usuario
-- 📱 **Bottom Navigation** con 5 opciones
-- 📋 **Bottom Sheet** de operaciones
+### 📝 Archivos de Configuración
 
-### ⚙️ Configuración Personalizada
+**`vercel.json`** - Configuración de build y deploy
 
-Si necesitas cambiar algo:
-
-**Cambiar puerto de desarrollo:**
 ```json
-// vercel.json
-"devCommand": "flutter run -d web-server --web-port 8080"
-```
-
-**Agregar variables de entorno:**
-```json
-// vercel.json
-"env": {
-  "API_BASE_URL": "https://api.globalfin.com"
+{
+  "buildCommand": "",
+  "outputDirectory": "public",
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
+  ]
 }
 ```
 
-### 🔄 Actualizaciones Automáticas
+**`.vercelignore`** - Archivos ignorados en deploy
 
-Vercel re-desplegará automáticamente cuando:
-- Hagas `git push` a la rama `main`
-- Actualices archivos en la carpeta `App movil/`
-- Cambies `vercel.json`
+```
+dashboard/
+App movil/globalfin_app/build/
+App movil/globalfin_app/.dart_tool/
+node_modules/
+.git/
+```
+
+### 📜 Historial de Despliegues
+
+Vercel almacena el historial completo de todos los despliegues.
+
+Para ver:
+1. Ve a tu dashboard de Vercel
+2. Selecciona "Deployments"
+3. Visualiza historial, logs y rollbacks
+
+### ♻️ Realizar Rollback
+
+Si algo falla:
+
+```bash
+# En Vercel Dashboard:
+1. Deployments tab
+2. Selecciona despliegue anterior
+3. Click "Redeploy"
+```
+
+### 🔄 Flujo de Actualización
+
+```
+Git Commit  →  Git Push  →  GitHub  →  Vercel Webhook  →  Build  →  Deploy
+   Local        main branch   Remote    Auto trigger      (1-2 min)  Live
+```
+
+### 📊 Monitoreo y Logs
+
+**En Vercel Dashboard:**
+
+1. **Build Logs** - Errores de compilación
+2. **Runtime Logs** - Errores en ejecución
+3. **Analytics** - Visitantes, performance
+4. **Edge Network** - Velocidad de carga
 
 ---
 
-## 🖥️ Dashboard JavaFX (Empleados)
+## 🖥️ Dashboard JavaFX (No en Vercel)
 
-El dashboard **NO** se despliega en Vercel (es una app de escritorio).
+El dashboard **no se despliega en Vercel** porque es una aplicación de escritorio.
 
-### Cómo Usar el Dashboard:
-
-**En tu máquina local:**
-
-```bash
-# Clonar repositorio
-git clone https://github.com/CristianPG1993/Proyecto-GlobalFin.git
-cd Proyecto-GlobalFin/dashboard/globalfin-dashboard
-
-# Ejecutar
-mvn javafx:run
-```
+### Distribución local
 
 **Requisitos:**
 - Java 17+
 - Maven 3.6+
-- Entorno con interfaz gráfica (Windows, Mac, Linux con X11)
+- Interfaz gráfica
 
-**Distribución a empleados:**
+### Ejecutar localmente
 
-Puedes crear un JAR ejecutable:
+```bash
+git clone https://github.com/CristianPG1993/Proyecto-GlobalFin.git
+cd Proyecto-GlobalFin/dashboard/globalfin-dashboard
+mvn javafx:run
+```
+
+### Distribución a empleados
+
+**Crear JAR ejecutable:**
+
 ```bash
 cd dashboard/globalfin-dashboard
 mvn clean package
-
-# El JAR estará en:
-# target/dashboard-empleados-1.0.0-SNAPSHOT.jar
 ```
 
-Luego distribuir este JAR a los empleados internos.
+**Archivo generado:**
+```
+target/dashboard-empleados.jar
+```
+
+**Ejecutar JAR:**
+```bash
+java -jar target/dashboard-empleados.jar
+```
+
+## 🗄️ Base de Datos (Supabase Cloud)
+
+**Ya está en la nube y accesible desde cualquier lugar.**
+
+### URL
+```
+https://etlqpvghtqiqofepukqf.supabase.co
+```
+
+### Acceso a Datos
+
+**Desde la app Flutter (Vercel):**
+- ✅ Conecta automáticamente a Supabase
+- ✅ Carga clientes y transacciones reales
+- ✅ Si falla, muestra datos mock
+
+**Desde el dashboard (Local):**
+- ✅ Conecta automáticamente a Supabase
+- ✅ Carga operaciones reales
+- ✅ Si falla, muestra datos mock
+
+### 🔐 Credenciales
+
+```
+Anon Key: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+(Incluida en código fuente - OK para anon key pública)
+```
+
+### 📋 Tablas
+
+1. **clientes** (10 registros)
+   - id, nombre, apellido, email, telefono, saldo, estado
+
+2. **operaciones** (10 registros)
+   - id, id_cliente, monto, tipo, estado, nivel_riesgo, canal
+
+3. **transacciones** (10 registros)
+   - id, id_cliente, id_operacion, monto, tipo, descripcion
 
 ---
 
-## 📊 Arquitectura Final
+## 📊 Arquitectura Final en Producción
 
 ```
-┌─────────────────────────────────────┐
-│                                     │
-│    👥 CLIENTES                      │
-│                                     │
-│   App Móvil Flutter                 │
-│   📱 Vercel (Web)                   │
-│   https://globalfin.vercel.app      │
-│                                     │
-└──────────────┬──────────────────────┘
-               │
-               │ Future Backend API
-               │
-┌──────────────▼──────────────────────┐
-│                                     │
-│    👨‍💼 EMPLEADOS                     │
-│                                     │
-│   Dashboard JavaFX                  │
-│   🖥️  Local (Escritorio)            │
-│   mvn javafx:run                    │
-│                                     │
-└─────────────────────────────────────┘
+┌──────────────────────────────────────────┐
+│     Clientes (Navegador Web)             │
+│     https://tu-vercel-app.vercel.app     │
+│     📱 App Flutter Compilada             │
+│     ✅ Carga desde Supabase              │
+│     ✅ Material Design 3                 │
+│     ✅ Responsive Design                 │
+└────────────────┬─────────────────────────┘
+                 │
+                 │ REST API (HTTPS)
+                 ├─────────────────────────────────────────────────┐
+                 │                                                 │
+    ┌────────────▼──────────────────────────┐    ┌──────────────▼────────────┐
+    │ Supabase PostgreSQL (Producción)      │    │ Dashboard JavaFX    │
+    │ https://supabase.co                   │    │ 👨‍💼 Empleados (Local)    │
+    │ ✅ 30 registros de prueba             │    │ mvn javafx:run      │
+    │ ✅ Row Level Security (RLS)           │    │ ✅ Carga real time  │
+    │ ✅ REST API automático                │    └─────────────────────────┘
+    │ ✅ Backups automáticos                │
+    └──────────────────────────────────────┘
 ```
 
 ---
 
-## ✅ Checklist de Despliegue
+## ✅ Checklist de Validación
 
-- [ ] Código subido a GitHub
-- [ ] Cuenta creada en Vercel
-- [ ] Proyecto importado en Vercel
-- [ ] Build exitoso
-- [ ] App accesible en URL de producción
-- [ ] Funcionalidades probadas en producción
-- [ ] Dashboard JavaFX probado localmente
+- [x] Build Flutter compilado en `/public`
+- [x] `vercel.json` configurado correctamente
+- [x] `.vercelignore` actualizado
+- [x] Supabase conectado desde función REST
+- [x] App cargando clientes desde BD
+- [x] Fallback a datos mock si falla
+- [x] Despliegue automático activado
+- [x] Dashboard funciona localmente
+- [x] Dashboard conecta a Supabase
+- [x] Documentación actualizada
 
 ---
 
 ## 🆘 Troubleshooting
 
-### Build falla en Vercel
-- **Problema**: Flutter no está instalado
-- **Solución**: Vercel necesita configuración especial. Mejor opción: usar el build pre-compilado
+### La app no carga datos de Supabase
 
-### App no carga correctamente
-- **Problema**: Rutas incorrectas
-- **Solución**: Verificar que `vercel.json` tiene las rewrites correctas
+**Síntomas:** Muestra datos mock permanentemente
 
-### Dashboard no se puede desplegar
-- **Respuesta**: Correcto. JavaFX es solo para escritorio, no web.
+**Soluciones:**
+1. Verifica conexión a internet
+2. Revisa Supabase Dashboard - ¿Tablas existen?
+3. Verifica headers en request (apikey)
+4. Mira console del navegador (F12)
+
+### Vercel muestra error 404
+
+**Soluciones:**
+1. Verifica `vercel.json` - rewrites correctos
+2. Verifica `outputDirectory: "public"`
+3. Reconstruye: `flutter build web`
+4. Actualiza `/public` con nuevo build
+
+### Dashboard no conecta a Supabase localmente
+
+**Soluciones:**
+1. Verifica conexión a internet
+2. Revisa que tienes Java 17+
+3. Revisa Maven está instalado
+4. Mira logs de Maven para errores
 
 ---
 
-## 📚 Recursos
+## 📈 Próximos Pasos
 
-- [Vercel Docs](https://vercel.com/docs)
-- [Flutter Web Deployment](https://docs.flutter.dev/deployment/web)
-- [JavaFX Documentation](https://openjfx.io/)
+1. **Monitoreo en Producción**
+   - Configurar alertas en Vercel
+   - Monitorear errores con Sentry
+
+2. **Optimizaciones**
+   - Caché de datos
+   - Compresión de imágenes
+   - Lazy loading de datos
+
+3. **Autenticación**
+   - Login con Supabase Auth
+   - Roles y permisos
+   - Refresh tokens
+
+4. **Nuevas Características**
+   - Notificaciones push
+   - Chat en tiempo real
+   - Gráficos y reportes
 
 ---
 
-**¡Listo para desplegar! 🚀**
+**Última actualización**: 28 de Febrero, 2026  
+**Estado**: ✅ En Producción

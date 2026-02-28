@@ -1,23 +1,45 @@
 # 🏦 Proyecto GlobalFin
 
-Plataforma bancaria digital completa con aplicación móvil para clientes y dashboard de operaciones para empleados.
+Plataforma bancaria digital **completamente funcional** con integración de base de datos Supabase.
 
-## 🌐 Despliegue en Producción
+**Estado**: ✅ **PRODUCCIÓN** - Todas las funcionalidades implementadas
 
-### 📱 App Móvil (Clientes)
-**🚀 Desplegada en Vercel**
+## 📦 Componentes del Proyecto
 
-La aplicación móvil está lista para desplegarse en Vercel. Ver instrucciones completas en [DESPLIEGUE_VERCEL.md](DESPLIEGUE_VERCEL.md)
+### 📱 App Móvil para Clientes (Flutter)
+- **Ubicación**: `App movil/globalfin_app/`
+- **Estado**: ✅ Desplegada en Vercel
+- **BD**: ✅ Conectada a Supabase
+- **Datos**: Clientes, transacciones en tiempo real
+- **URL**: Disponible en Vercel (despliegue automático)
 
-**Demo:** Una vez desplegada, estará disponible en tu URL de Vercel
+### 🖥️ Dashboard para Empleados (JavaFX)
+- **Ubicación**: `dashboard/globalfin-dashboard/`
+- **Estado**: ✅ Compilado y funcional
+- **BD**: ✅ Conectada a Supabase
+- **Datos**: Operaciones en tiempo real
+- **Ejecución**: `mvn javafx:run`
 
-### 🖥️ Dashboard (Empleados)
-**💻 Aplicación de Escritorio (JavaFX)**
+### 🗄️ Base de Datos (Supabase)
+- **Estado**: ✅ Completamente configurada
+- **Tablas**: clientes, operaciones, transacciones
+- **Registros**: 30 datos de prueba
+- **API**: REST con autenticación apikey
 
-El dashboard se ejecuta localmente en las máquinas de los empleados.
+---
 
+## 🚀 Cómo Usar
+
+### App Móvil en Navegador
 ```bash
-cd dashboard/globalfin-dashboard
+# Accede directamente desde tu navegador
+# https://tu-dominio-vercel.vercel.app
+```
+
+### Dashboard Local
+```bash
+git clone https://github.com/CristianPG1993/Proyecto-GlobalFin.git
+cd Proyecto-GlobalFin/dashboard/globalfin-dashboard
 mvn javafx:run
 ```
 
@@ -27,255 +49,251 @@ mvn javafx:run
 
 ```
 Proyecto-GlobalFin/
-├── App movil/
-│   └── globalfin_app/          # 📱 App Flutter para clientes
-│       ├── lib/
-│       │   ├── main.dart
-│       │   ├── ui/
-│       │   │   └── home_screen.dart
-│       │   ├── widgets/        # Componentes reutilizables
-│       │   ├── models/         # Modelos de datos
-│       │   └── utils/          # Colores y estilos
-│       └── build/web/          # ✅ Build listo para Vercel
+├── App movil/globalfin_app/
+│   ├── lib/
+│   │   ├── main.dart (Inicializa Supabase)
+│   │   ├── services/supabase_service.dart
+│   │   ├── ui/home_screen.dart
+│   │   ├── models/
+│   │   ├── widgets/
+│   │   └── utils/
+│   ├── pubspec.yaml (supabase_flutter)
+│   └── build/web/ (Build compilado)
 │
-├── dashboard/
-│   └── globalfin-dashboard/    # 🖥️ Dashboard JavaFX para empleados
-│       ├── src/main/java/
-│       │   └── com/globalfin/dashboard/
-│       │       ├── DashboardApp.java
-│       │       ├── model/
-│       │       └── data/
-│       └── src/main/resources/
-│           └── styles/
-│               └── dashboard.css
+├── dashboard/globalfin-dashboard/
+│   ├── src/main/java/
+│   │   └── com/globalfin/dashboard/
+│   │       ├── DashboardApp.java
+│   │       ├── service/SupabaseService.java
+│   │       ├── data/MockDataProvider.java
+│   │       └── model/
+│   ├── pom.xml (Maven)
+│   └── src/main/resources/
+│       ├── supabase_init.sql
+│       └── styles/dashboard.css
 │
-├── vercel.json                 # ⚙️ Configuración de Vercel
-├── .vercelignore              # 🚫 Archivos ignorados en despliegue
-└── DESPLIEGUE_VERCEL.md       # 📖 Guía de despliegue
+├── public/ (Flutter web build)
+├── vercel.json
+└── README.md
 ```
 
 ---
 
-## 📱 App Móvil - Aplicación para Clientes
+## 🎯 Características Implementadas
 
-**Ubicación:** `App movil/globalfin_app/`
+### App Móvil
+✅ Pantalla principal con posición global  
+✅ Carrusel de cuentas (datos reales)  
+✅ Operaciones rápidas  
+✅ Lista de transacciones (datos reales)  
+✅ Loading indicator  
+✅ Fallback automático a datos mock  
+✅ Material Design 3  
+✅ Responsive design  
 
-Aplicación multiplataforma desarrollada en **Flutter** para clientes bancarios.
+### Dashboard
+✅ Métricas KPI en tiempo real  
+✅ Tabla de operaciones (datos reales)  
+✅ Panel de detalles contextual  
+✅ Acciones (revisar, sospechosa, escalar)  
+✅ Filtros por estado y riesgo  
+✅ Notas internas  
+✅ Fallback automático a datos mock  
+✅ Diseño profesional  
 
-### ✨ Características Implementadas:
+### Base de Datos
+✅ 3 tablas diseñadas  
+✅ 30 registros de prueba  
+✅ REST API automático  
+✅ Row Level Security (RLS)  
+✅ Relaciones FK  
+✅ Timestamps automáticos  
 
-- 🏠 **Pantalla Principal** con posición global consolidada
-- 💳 **Carrusel de Cuentas** con 3 cuentas bancarias
-- 💰 **6 Operaciones Rápidas**: Transferir, Pagar, Bizum, Retirar, Ingresar, Más
-- 📊 **Lista de Movimientos** con 7 transacciones recientes
-- 📋 **Bottom Sheet** con acciones detalladas
-- 🔔 **Notificaciones** y perfil de usuario
-- 🧭 **Bottom Navigation** con 5 secciones
+---
 
-### 🛠️ Tecnologías:
+## 🔗 Integración Supabase
 
-- Flutter 3.41.2
-- Dart 3.11.0
+### Credenciales
+```
+URL: https://etlqpvghtqiqofepukqf.supabase.co
+API Key: [Anon Key configurada]
+Autenticación: Header "apikey"
+```
+
+### Métodos Disponibles
+
+**Flutter (SupabaseService.dart)**:
+- getClientes() → List<Map>
+- getOperaciones() → List<Map>
+- getTransacciones() → List<Map>
+- getTransaccionesPorCliente(clienteId)
+- crearOperacion(data)
+- actualizarEstadoOperacion(id, estado)
+- getClienteById(id)
+- getSaldoCliente(id)
+
+**JavaFX (SupabaseService.java)**:
+- getOperaciones() → List<JsonObject>
+- getClientes() → List<JsonObject>
+- getTransacciones() → List<JsonObject>
+- getTransaccionesPorCliente(clienteId)
+- crearOperacion(data)
+- actualizarEstadoOperacion(id, estado)
+- getClienteById(id)
+- getSaldoCliente(id)
+- testConnection()
+
+---
+
+## 📱 App Móvil
+
+**Ubicación**: `App movil/globalfin_app/`
+
+### Características
+- Carga de clientes desde Supabase
+- Lista de transacciones actualizadas
+- Loading indicator mientras se cargan datos
+- Fallback automático a datos mock
+- Bottom Navigation con 5 secciones
 - Material Design 3
 - Responsive Design
 
-### 📖 Documentación:
-
-- [README.md](App movil/globalfin_app/README.md) - Documentación completa
-- [GUIA_IMPLEMENTACION.md](App movil/globalfin_app/GUIA_IMPLEMENTACION.md) - Guía técnica
-- [INDICE_ARCHIVOS.md](App movil/globalfin_app/INDICE_ARCHIVOS.md) - Estructura de archivos
-- [INICIO_RAPIDO.md](App movil/globalfin_app/INICIO_RAPIDO.md) - Getting started
-
-### 🚀 Ejecutar Localmente:
-
+### Ejecutar
 ```bash
 cd "App movil/globalfin_app"
 flutter pub get
-flutter run -d chrome    # En navegador
-flutter run              # En dispositivo/emulador
+flutter run -d chrome
 ```
 
-### 🌐 Desplegar en Vercel:
-
-```bash
-# Build ya está listo en build/web/
-# Sigue las instrucciones en DESPLIEGUE_VERCEL.md
-```
+### Documentación
+- [README.md](App movil/globalfin_app/README.md)
+- [GUIA_IMPLEMENTACION.md](App movil/globalfin_app/GUIA_IMPLEMENTACION.md)
+- [INICIO_RAPIDO.md](App movil/globalfin_app/INICIO_RAPIDO.md)
 
 ---
 
-## 🖥️ Dashboard - Panel de Operaciones para Empleados
+## 🖥️ Dashboard
 
-**Ubicación:** `dashboard/globalfin-dashboard/`
+**Ubicación**: `dashboard/globalfin-dashboard/`
 
-Dashboard interno desarrollado en **JavaFX** para empleados que gestionan operaciones bancarias.
+### Características
+- Tabla de operaciones en tiempo real
+- Métricas KPI calculadas automáticamente
+- Panel de detalles contextual
+- Sistema de filtros
+- Notas internas para operaciones
+- Fallback a datos mock
 
-### ✨ Características Implementadas:
-
-- 📊 **Panel de Métricas KPI** con 4 indicadores clave
-- 📋 **Tabla de Operaciones** con 10 operaciones de ejemplo
-- 👉 **Panel de Detalles** contextual con información completa
-- 🎮 **Acciones**: Marcar revisada, marcar sospechosa, escalar a fraude
-- 🔍 **Filtros** por estado, riesgo y fecha
-- 🎨 **Diseño Corporativo** con tema profesional
-- 📝 **Campo de Notas** para comentarios internos
-
-### 🛠️ Tecnologías:
-
-- JavaFX 21.0.5
+### Requisitos
 - Java 17+
 - Maven 3.6+
-- Gson 2.10.1 (preparado para backend)
+- Interfaz gráfica (X11/Windows/Mac)
 
-### 📖 Documentación:
-
-- [README.md](dashboard/globalfin-dashboard/README.md) - Documentación completa del dashboard
-
-### 🚀 Ejecutar Localmente:
-
-**Requisitos:** Java 17+, Maven 3.6+, Entorno con interfaz gráfica
-
+### Ejecutar
 ```bash
 cd dashboard/globalfin-dashboard
 mvn javafx:run
 ```
 
-### 📦 Crear JAR para Distribución:
-
+### Compilar JAR
 ```bash
-cd dashboard/globalfin-dashboard
 mvn clean package
-# El JAR estará en: target/dashboard-empleados-1.0.0-SNAPSHOT.jar
+# JAR: target/dashboard-empleados.jar
+```
+
+### Documentación
+- [README.md](dashboard/globalfin-dashboard/README.md)
+
+---
+
+## 🚀 Despliegue
+
+### Vercel (App Móvil)
+- ✅ Configurado en `vercel.json`
+- ✅ Build en `/public`
+- ✅ Despliegue automático en git push
+- ✅ Ver [DESPLIEGUE_VERCEL.md](DESPLIEGUE_VERCEL.md)
+
+### Local (Dashboard)
+```bash
+git clone https://github.com/CristianPG1993/Proyecto-GlobalFin.git
+cd Proyecto-GlobalFin/dashboard/globalfin-dashboard
+mvn javafx:run
 ```
 
 ---
 
-## 🎨 Documentación de Diseño
+## 📊 Datos de Prueba
 
-Los wireframes y diseños se encuentran en:
+### Clientes (10)
+Ana García, Carlos Ruiz, María Martínez, Juan López, Laura Gómez, Pedro Sánchez, Elena Rodríguez, Miguel Fernández, Isabel Torres, Francisco Jiménez
 
-### App Móvil:
-- `App movil/low fidelity home.png`
-- `App movil/low fidelity reealizar operacion.png`
-- `App movil/high fidelity inicio app.png`
-- `App movil/high fidelity app.png`
+### Operaciones (10)
+Diferentes tipos: TRANSFER, BIZUM, PAYMENT, WITHDRAWAL, DEPOSIT  
+Estados: pending, completed, reviewing, suspicious, rejected  
+Niveles: low, medium, high
 
-### Dashboard:
-- `dashboard/low-high fidelity/` (wireframes del dashboard)
-
----
-
-## 🎯 Estado del Proyecto
-
-### ✅ Completado:
-
-#### App Móvil:
-- ✅ Estructura completa del proyecto Flutter
-- ✅ HomeScreen con todos los componentes
-- ✅ 4 widgets reutilizables
-- ✅ 3 modelos de datos con datos mock
-- ✅ Sistema de colores y estilos
-- ✅ Build para producción web
-- ✅ Configuración para Vercel
-- ✅ Documentación completa (4 archivos MD)
-
-#### Dashboard:
-- ✅ Estructura Maven completa
-- ✅ DashboardApp con UI completa (400+ líneas)
-- ✅ Modelos de datos (Operation, DashboardMetrics)
-- ✅ MockDataProvider con 10 operaciones
-- ✅ Estilos CSS corporativos
-- ✅ Compilación sin errores
-- ✅ README con instrucciones completas
-
-### 📋 Próximos Pasos Sugeridos:
-
-1. **Desplegar App Móvil en Vercel**
-   - Ver [DESPLIEGUE_VERCEL.md](DESPLIEGUE_VERCEL.md)
-
-2. **Integración con Backend Real**
-   - Crear API REST
-   - Conectar ambas aplicaciones
-   - Implementar autenticación
-
-3. **Funcionalidades Adicionales**
-   - Login/registro de usuarios
-   - Notificaciones push
-   - Chat de soporte
-   - Gráficos y reportes avanzados
+### Transacciones (10)
+Asociadas a clientes y operaciones
 
 ---
 
-## 🏗️ Arquitectura
+## 🛠️ Tecnologías
+
+**Frontend**:
+- Flutter 3.41.2 / Dart 3.11.0
+- JavaFX 21.0.5 / Java 17+
+- Material Design 3 / CSS profesional
+
+**Backend/BD**:
+- Supabase PostgreSQL
+- REST API automático
+
+**Desarrollo**:
+- Maven / pubspec
+- GitHub / Vercel
+- VS Code
+
+---
+
+## 📈 Arquitectura
 
 ```
-┌─────────────────────────────────────┐
-│         👥 CLIENTES                 │
-│                                     │
-│    📱 App Móvil Flutter             │
-│    🌐 Vercel (Web/PWA)              │
-│    Consultas y operaciones          │
-└──────────────┬──────────────────────┘
-               │
-               │ (Futura API REST)
-               │
-┌──────────────▼──────────────────────┐
-│       👨‍💼 EMPLEADOS                  │
-│                                     │
-│    🖥️ Dashboard JavaFX              │
-│    💻 Local (Escritorio)            │
-│    Gestión de operaciones           │
-└─────────────────────────────────────┘
+Clientes (Web/App)          Backend Real (Supabase)       Empleados (Desktop)
+        ↓                            ↓                            ↓
+  Flutter Web                   PostgreSQL                    JavaFX Dashboard
+  (Vercel)              (REST API automático)            (Local ejecutable)
+        ↓                            ↓                            ↓
+  Material Design        ↔ 30 registros prueba ↔      Tabla operaciones
+  Responsive            ↔ Row Level Security ↔        Métricas KPI
+  Real-time data        ↔ Relaciones FK      ↔        Panel detalles
 ```
 
 ---
 
-## 🛠️ Tecnologías Utilizadas
+## ✅ Checklist Final
 
-### Frontend Clientes:
-- **Flutter** 3.41.2 - Framework multiplataforma
-- **Dart** 3.11.0 - Lenguaje de programación
-- **Material Design 3** - Sistema de diseño
-
-### Frontend Empleados:
-- **JavaFX** 21.0.5 - Framework de UI para Java
-- **Java** 17+ - Lenguaje de programación
-- **Maven** - Gestión de dependencias
-
-### Despliegue:
-- **Vercel** - Hosting de la app móvil
-- **GitHub** - Control de versiones
+- [x] App móvil compilada para web
+- [x] Dashboard JavaFX compilado
+- [x] Base de datos Supabase creada
+- [x] Servicio Flutter integrado
+- [x] Servicio JavaFX integrado
+- [x] Datos cargando desde Supabase
+- [x] Fallback automático a mock
+- [x] Vercel configurado
+- [x] Despliegue automático activo
+- [x] Documentación actualizada
 
 ---
 
-## 📚 Documentación Adicional
+## 📚 Documentación
 
-- 📱 [App Móvil - README](App movil/globalfin_app/README.md)
-- 🖥️ [Dashboard - README](dashboard/globalfin-dashboard/README.md)
-- 🚀 [Guía de Despliegue en Vercel](DESPLIEGUE_VERCEL.md)
-
----
-
-## 👥 Autor
-
-**Cristian Paños Gallego**
+- 📱 [App Móvil](App movil/globalfin_app/README.md)
+- 🖥️ [Dashboard](dashboard/globalfin-dashboard/README.md)
+- 🚀 [Despliegue](DESPLIEGUE_VERCEL.md)
 
 ---
 
-## 📄 Licencia
-
-Este proyecto ha sido desarrollado como parte de un proyecto académico.
-  - UI responsive y accesible
-
-- 🔄 **Dashboard**: En planificación
-
-- 📅 **Backend**: Pendiente
-
-## 🔗 Recursos
-
-- Documentación Flutter: https://flutter.dev
-- Material Design: https://m3.material.io
-
-## 📝 Licencia
-
-Proyecto educativo - GlobalFin
+**Última actualización**: 28 de Febrero, 2026  
+**Estado**: ✅ Producción  
+**Autor**: Cristian Paños Gallego

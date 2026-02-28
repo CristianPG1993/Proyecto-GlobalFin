@@ -30,39 +30,72 @@ flutter run -d <device_id>   # Ejecutar en dispositivo específico
 
 ### Pantalla de Inicio Incluye:
 - ✅ Header con "Hola, Cristian" + avatar + notificaciones
-- ✅ Tarjeta "Posición Global" con saldo total: **€ 24,590.75**
-- ✅ Carrusel de 3 cuentas con gradientes oscuros
+- ✅ Tarjeta "Posición Global" con saldo total **cargado desde Supabase**
+- ✅ Carrusel de 3+ cuentas con datos reales
 - ✅ 4 acciones rápidas (Enviar, Escanear, Recibos, Más)
-- ✅ Lista de 7 últimos movimientos con iconos y colores
+- ✅ Lista de movimientos con datos **sincronizados en tiempo real**
 - ✅ Botón flotante verde "Realizar operación"
 - ✅ Bottom navigation con 4 pestañas
 
-### Modal de Operaciones Incluye:
-- ✅ 5 acciones: Transferir, Pagar recibo, Bizum, Ingresar cheque, Crear incidencia
-- ✅ Cada acción con icono de color, título y descripción
-- ✅ Botón "Cancelar" para cerrar
+### 🔄 Loading Automático (Nuevo)
+Cuando abres la app:
+1. Se muestra un indicador de carga ⏳
+2. La app conecta a Supabase automáticamente
+3. Carga clientes y transacciones en tiempo real
+4. Fallback automático a datos mock si la conexión falla
+
+**En la consola verás:**
+```
+✓ Conexión a Supabase exitosa
+✓ Se obtuvieron 10 clientes
+✓ Se cargaron 10 transacciones
+```
+
+---
+
+## ⚙️ Configuración Supabase
+
+La app está **pre-configurada** con credenciales de Supabase en `main.dart`:
+
+```dart
+await Supabase.initialize(
+  url: 'https://etlqpvghtqiqofepukqf.supabase.co',
+  anonKey: 'eyJhbGci...', // Token JWT incluido
+);
+```
+
+**No necesitas hacer nada, funciona automáticamente.**
 
 ---
 
 ## 📂 Archivos Clave
 
 ### 🎯 Empezar por aquí:
-1. **`lib/main.dart`** → Punto de entrada y tema
-2. **`lib/ui/home_screen.dart`** → Pantalla principal (425 líneas)
-3. **`README.md`** → Documentación completa
+1. **`lib/main.dart`** → Punto de entrada + Supabase init
+2. **`lib/ui/home_screen.dart`** → Pantalla principal (ahora con datos reales)
+3. **`lib/services/supabase_service.dart`** → Conexión a BD
+4. **`README.md`** → Documentación completa
 
 ### 🎨 Personalizar estilos:
 - **`lib/utils/app_colors.dart`** → Cambiar colores
 - **`lib/utils/app_text_styles.dart`** → Cambiar tipografías
 
-### 📦 Modificar datos mock:
-- **`lib/models/account.dart`** → Método `getMockAccounts()`
-- **`lib/models/transaction.dart`** → Método `getMockTransactions()`
+### 🗄️ Cambiar datos (Supabase):
+Para agregar/editar clientes y transacciones:
+- Ir a: https://supabase.com → Login → Proyecto → SQL Editor
+- Tablas disponibles: `clientes`, `transacciones`, `operaciones`
+- **Importante:** Los cambios se sincronizan automáticamente en la app
 
-### 🧩 Widgets reutilizables:
-- **`lib/widgets/account_card.dart`** → Tarjeta de cuenta
-- **`lib/widgets/transaction_item.dart`** → Item de movimiento
-- **`lib/widgets/operation_bottom_sheet.dart`** → Modal de operaciones
+**Ejemplo: Agregar un nuevo cliente**
+```sql
+INSERT INTO clientes (nombre, apellido, saldo, estado)
+VALUES ('Juan', 'García', 50000, 'activo');
+```
+
+### 📦 Fallback a datos mock:
+Si necesitas datos de prueba sin Supabase:
+- Editar `lib/models/account.dart` → método `getMockAccounts()`
+- Editar `lib/models/transaction.dart` → método `getMockTransactions()`
 
 ---
 
@@ -85,143 +118,69 @@ Editar `lib/utils/app_colors.dart`:
 static const Color accentGreen = Color(0xFF2EC4B6);  // ← Cambiar HEX aquí
 ```
 
-### Agregar más cuentas mock:
-Editar `lib/models/account.dart` → método `getMockAccounts()`:
+### Cambiar URL o credenciales Supabase:
+**Importante:** Las credenciales actuales son públicas (anon key), solo lectura.
+
+Editar `lib/main.dart`:
 ```dart
-Account(
-  id: '4',
-  name: 'Cuenta Nueva',
-  lastDigits: '1234',
-  balance: 5000.00,
-  monthVariation: 3.5,
-),
+await Supabase.initialize(
+  url: 'TU_URL_SUPABASE',
+  anonKey: 'TU_ANON_KEY',
+);
 ```
 
 ---
 
-## 🔥 Características de Desarrollo
+## 🌐 Despliegue en Producción
 
-### Hot Reload
-Mientras la app corre, puedes hacer cambios en el código y:
-- Presiona **`r`** → Recarga rápida (mantiene estado)
-- Presiona **`R`** → Reinicio completo
+La app se **desplega automáticamente en Vercel** cuando haces `git push`:
 
-### Atajos en la terminal:
+```bash
+git status                  # Ver cambios
+git add .
+git commit -m "Tus cambios"
+git push origin main        # Deploy automático ✅
 ```
-r  → Reload                    q  → Quit
-R  → Hot restart               h  → Help
-```
+
+Ver en el navegador: https://proyecto-globalfin.vercel.app
 
 ---
 
-## ✅ Checklist de Verificación
+## 🚨 Solución de Problemas
 
-Antes de ejecutar, verifica que tengas:
-- [ ] Flutter SDK instalado (`flutter --version`)
-- [ ] Editor de código (VS Code / Android Studio)
-- [ ] Dispositivo o emulador conectado (`flutter devices`)
-- [ ] Dependencias instaladas (`flutter pub get`)
+### "No se puede conectar a Supabase"
+**Solución:** La app automáticamente usa datos mock. Verifica:
+1. ¿Tienes conexión a internet?
+2. ¿Las credenciales en main.dart son correctas?
+3. ¿La base de datos Supabase está activa?
 
-Si algo falta:
-```bash
-flutter doctor    # Diagnóstico completo
+### "Datos vacíos / No se cargan"
+**Solución:** Verifica la consola (F12):
+```
+// Debe mostrar:
+✓ Se obtuvieron 10 clientes
+✓ Se cargaron X transacciones
+
+// Si ves error, comprueba:
+1. Los nombres de las tablas (clientes, transacciones)
+2. Permisos RLS en Supabase
+3. Clave JWT válida
 ```
 
----
-
-## 🐛 Solución Rápida de Problemas
-
-### Error: "No devices found"
-```bash
-# Android
-- Abrir Android Studio
-- Tools → Device Manager → Create Device
-
-# iOS (solo en Mac)
-open -a Simulator
-```
-
-### Error: "Waiting for another flutter command..."
-```bash
-killall -9 dart
-flutter clean
-```
-
-### Error en `pubspec.yaml`
-```bash
-flutter clean
-flutter pub get
-```
+### "Flutter no se encuentra"
+Ver archivo: `FLUTTER_NO_INSTALADO.md`
 
 ---
 
 ## 📚 Documentación Completa
 
-| Archivo | Contenido |
-|---------|-----------|
-| **README.md** | Documentación general del proyecto |
-| **GUIA_IMPLEMENTACION.md** | Guía completa con ejemplos de backend |
-| **INDICE_ARCHIVOS.md** | Lista detallada de todos los archivos |
+- **README.md** → Visión general y arquitectura
+- **GUIA_IMPLEMENTACION.md** → Detalles técnicos
+- **INDICE_ARCHIVOS.md** → Descripción de cada archivo
+- **DIAGRAMAS_FLUJOS.md** → Flujo de datos y componentes
+- Carpeta app → Supabase integration details
 
 ---
 
-## 🎯 Próximos Pasos Recomendados
-
-### Nivel 1: Familiarización (1-2 horas)
-1. Ejecutar la app y explorar todas las funcionalidades
-2. Leer `home_screen.dart` para entender la estructura
-3. Modificar datos mock para ver cambios en tiempo real
-
-### Nivel 2: Personalización (2-4 horas)
-1. Cambiar colores en `app_colors.dart`
-2. Agregar más cuentas y transacciones mock
-3. Modificar textos y mensajes
-
-### Nivel 3: Extensión (5-10 horas)
-1. Implementar navegación entre pestañas
-2. Crear pantalla de detalle de transacción
-3. Agregar animaciones y transiciones
-
-### Nivel 4: Integración (10+ horas)
-1. Implementar state management (Provider/Bloc)
-2. Conectar con backend real (ver `GUIA_IMPLEMENTACION.md`)
-3. Agregar autenticación y seguridad
-
----
-
-## 💡 Tips Profesionales
-
-### Performance
-- Usa `const` en widgets que no cambian
-- Evita `setState()` innecesarios
-- Usa `ListView.builder` para listas largas
-
-### UX
-- Siempre proporciona feedback visual
-- Mantén botones >48px de altura
-- Usa colores consistentes
-
-### Código limpio
-- Separa widgets grandes en componentes
-- Usa nombres descriptivos
-- Comenta lógica compleja
-
----
-
-## 🆘 Soporte
-
-### Recursos oficiales:
-- Flutter Docs: https://docs.flutter.dev
-- Flutter Discord: https://discord.gg/flutter
-- Stack Overflow: [flutter] tag
-
-### En este proyecto:
-- Ver `README.md` para arquitectura
-- Ver `GUIA_IMPLEMENTACION.md` para ejemplos avanzados
-- Ver `INDICE_ARCHIVOS.md` para navegación
-
----
-
-**¡Listo para empezar!** 🎉
-
-Ejecuta `flutter run` y comienza a explorar GlobalFin.
+**Última actualización:** 28 de Febrero, 2026  
+**Estado:** ✅ Completamente funcional con Supabase

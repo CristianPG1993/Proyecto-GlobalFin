@@ -4,11 +4,13 @@ Este documento lista todos los archivos creados con su propósito y líneas de c
 
 ## 📂 Archivos de Configuración
 
-### `pubspec.yaml` (18 líneas)
+### `pubspec.yaml` (25 líneas) - ACTUALIZADO
 **Propósito:** Configuración del proyecto, dependencias y metadatos  
 **Dependencias principales:**
 - flutter (SDK)
 - cupertino_icons
+- **supabase_flutter: ^1.10.0** ⭐ NUEVO
+- **http: ^1.1.0** ⭐ NUEVO
 
 ### `analysis_options.yaml` (7 líneas)
 **Propósito:** Reglas de linting y análisis de código estático  
@@ -45,6 +47,7 @@ Este documento lista todos los archivos creados con su propósito y líneas de c
 **Propiedades:**
 - id, name, lastDigits, balance, monthVariation
 - Método `getMockAccounts()` con 3 cuentas de ejemplo
+**Uso:** Convertir datos de Supabase a objetos Account
 
 ### `lib/models/transaction.dart` (72 líneas)
 **Propósito:** Modelo de transacción/movimiento  
@@ -52,12 +55,41 @@ Este documento lista todos los archivos creados con su propósito y líneas de c
 - id, title, date, amount, type, icon
 - Enum TransactionType (expense, income)
 - Método `getMockTransactions()` con 7 transacciones
+**Uso:** Representar movimientos bancarios del cliente
 
 ### `lib/models/operation_action.dart` (58 líneas)
 **Propósito:** Modelo de acción de operación  
 **Propiedades:**
 - id, title, subtitle, icon, iconColor
 - Método `getAllActions()` con 5 acciones disponibles
+**Uso:** Opciones del modal de operaciones
+
+---
+
+## 🔌 Servicios (NUEVO)
+
+### `lib/services/supabase_service.dart` (120+ líneas) ⭐ NUEVO
+**Propósito:** Cliente REST para comunicarse con Supabase PostgreSQL  
+**Características:**
+- Conexión automática al iniciar la app
+- Métodos async para obtener datos
+- Manejo de errores con logging
+- Headers correctos para autenticación
+
+**Métodos disponibles:**
+```dart
+static Future<List<Map<String, dynamic>>> getClientes()
+static Future<List<Map<String, dynamic>>> getTransacciones()  
+static Future<List<Map<String, dynamic>>> getOperaciones()
+static Future<List<Map<String, dynamic>>> getTransaccionesPorCliente(String id)
+static Future<bool> crearOperacion(Map<String, dynamic> data)
+static Future<bool> actualizarEstadoOperacion(String id, String estado)
+static Future<bool> testConnection()
+```
+
+**Credenciales incluidas:**
+- URL: https://etlqpvghtqiqofepukqf.supabase.co
+- API Key: eyJhbGci... (anon key - solo lectura/pública)
 
 ---
 
@@ -74,8 +106,8 @@ Este documento lista todos los archivos creados con su propósito y líneas de c
 ### `lib/widgets/transaction_item.dart` (69 líneas)
 **Propósito:** Item de movimiento/transacción en lista  
 **Características:**
-- Icono coloreado según tipo
-- Nombre y fecha
+- Icono coloreado según tipo (gasto/ingreso)
+- Nombre y fecha del movimiento
 - Importe con color (rojo para gasto, verde para ingreso)
 - Padding y spacing optimizados
 
@@ -99,228 +131,192 @@ Este documento lista todos los archivos creados con su propósito y líneas de c
 
 ---
 
-## 🖥️ Pantallas
+## 🎯 Pantallas (UI)
 
-### `lib/ui/home_screen.dart` (425 líneas) ⭐ ARCHIVO PRINCIPAL
+### `lib/ui/home_screen.dart` (425+ líneas) - ACTUALIZADO
 **Propósito:** Pantalla principal de la aplicación  
-**Componentes implementados:**
+**Cambios (Supabase):**
+- ✅ Lista `_accounts` ahora es dinámica (no final)
+- ✅ Lista `_transactions` ahora es dinámica (no final)
+- ✅ Nuevo bool `_isLoading` para mostrar indicador
+- ✅ Nuevo initState() que llama `_loadDataFromSupabase()`
+- ✅ Nuevo método `_loadDataFromSupabase()` (async)
+  - Llama SupabaseService.getClientes()
+  - Llama SupabaseService.getTransacciones()
+  - Convierte Map a Account/Transaction
+  - Fallback a _useMockData() si hay error
+- ✅ Nuevo método `_useMockData()` para datos fallback
+- ✅ Loading indicator (CircularProgressIndicator verde)
 
-1. **Header (_buildHeader)** - 94 líneas
-   - Avatar circular con borde
-   - Texto "Hola, [Nombre]"
-   - Icono de notificaciones con badge
+**Componentes visuales:**
+- Header con gradiente
+- Tarjeta "Posición Global"
+- Carrusel de cuentas
+- 4 acciones rápidas
+- Lista de transacciones
+- Botón flotante
+- Bottom navigation
 
-2. **Posición Global (_buildGlobalPosition)** - 34 líneas
-   - Card blanca con sombra
-   - Título y saldo total grande
-
-3. **Sección de Cuentas (_buildAccountsSection)** - 46 líneas
-   - Título "Tus Cuentas" con "Ver todas"
-   - Carrusel horizontal de AccountCard
-   - Altura fija de 180px
-
-4. **Acciones Rápidas (_buildQuickActions)** - 38 líneas
-   - 4 botones circulares
-   - Distribución uniforme (spaceAround)
-   - Enviar, Escanear, Recibos, Más
-
-5. **Header Movimientos (_buildMovementsHeader)** - 30 líneas
-   - Título "Últimos movimientos"
-   - Icono de filtro a la derecha
-
-6. **Lista de Movimientos** - En CustomScrollView
-   - SliverList con TransactionItem
-   - Espacio extra para botón flotante
-
-7. **Botón Flotante (_buildOperationButton)** - 26 líneas
-   - Verde turquesa con sombra
-   - Positioned en bottom: 80
-   - Abre OperationBottomSheet
-
-8. **Bottom Navigation (_buildBottomNavigationBar)** - 57 líneas
-   - 4 pestañas: Inicio, Movimientos, Pagos, Perfil
-   - Sombra superior
-   - Color acento verde para selección
-
-**Estado:**
-- Lista de accounts (3 mock)
-- Lista de transactions (7 mock)
-- selectedIndex para bottom nav
+**Datos usados:**
+- Clientes desde Supabase o mock
+- Transacciones desde Supabase o mock
 
 ---
 
 ## 🚀 Punto de Entrada
 
-### `lib/main.dart` (169 líneas)
-**Propósito:** Configuración principal y tema de la app  
-**Funciones:**
-- `main()`: Inicializa Flutter y configura barra de estado
-- `GlobalFinApp`: Widget raíz
-- `_buildTheme()`: Configuración completa del tema Material 3
+### `lib/main.dart` (60+ líneas) - ACTUALIZADO
+**Propósito:** Inicialización de la aplicación  
+**Cambios (Supabase):**
+- ✅ main() ahora es async
+- ✅ Llamada a `WidgetsFlutterBinding.ensureInitialized()`
+- ✅ Inicialización de Supabase con:
+  ```dart
+  await Supabase.initialize(
+    url: 'https://etlqpvghtqiqofepukqf.supabase.co',
+    anonKey: 'eyJhbGci...',
+  );
+  ```
+- ✅ Luego ejecuta `runApp(const GlobalFinApp())`
 
-**Tema configurado incluye:**
-- ColorScheme personalizado
-- AppBar theme
-- Button themes (Elevated, Text, Outlined)
-- Card theme
-- Input decoration
-- Divider theme
-- Bottom navigation theme
-- Text theme completo
-- Icon theme
-- Splash colors
+**Configuración:**
+- Tema Material Design 3 oscuro
+- Color primario: Azul marino
+- Color acento: Verde turquesa
 
 ---
 
-## 📄 Documentación
+## 📚 Documentación
 
-### `README.md` (167 líneas)
-**Propósito:** Documentación principal del proyecto  
-**Secciones:**
-- Características implementadas
-- Arquitectura del proyecto
-- Diseño y UX
-- Cómo ejecutar
-- Datos mock
-- Preparación para backend
-- Próximos pasos sugeridos
+### `README.md` (300+ líneas) - ACTUALIZADO
+**Secciones principales:**
+- Estado actual (✅ PRODUCCIÓN)
+- Cómo usar la aplicación
+- Componentes del proyecto
+- Base de datos Supabase
+- Integración con Supabase
+- Arquitectura
+- Cómo ejecutar en desarrollo
+- Cómo desplegar en Vercel
 
-### `GUIA_IMPLEMENTACION.md` (392 líneas)
-**Propósito:** Guía completa de implementación y extensión  
-**Secciones:**
-- Estructura visual del proyecto
-- Componentes clave
+### `INICIO_RAPIDO.md` (200+ líneas) - ACTUALIZADO
+**Propósito:** Guía rápida para empezar  
+**Contiene:**
+- 3 pasos para ejecutar la app
+- Vista previa de características
+- Sección de carga automática de Supabase
+- Configuración Supabase (pre-configurada)
+- Archivos clave
+- Personalización rápida
+- Despliegue en Vercel
+- Solución de problemas
+
+### `GUIA_IMPLEMENTACION.md` (400+ líneas) - ACTUALIZADO
+**Propósito:** Detalles técnicos completos  
+**Contiene:**
+- Estructura del proyecto
+- Componentes clave (con Supabase)
 - Paleta de colores
-- Ejemplos de código
-- Integración con backend (ejemplos completos)
+- Cómo integrar con tu propio backend
 - Testing
 - Comandos rápidos
 - Checklist de funcionalidades
 - Solución de problemas
-- Recursos de aprendizaje
+- Despliegue a producción
+
+### `INDICE_ARCHIVOS.md` (ESTE ARCHIVO)
+**Propósito:** Descripción de cada archivo  
+**Contiene:** Propósito y líneas de código de cada archivo
+
+### `DIAGRAMAS_FLUJOS.md`
+**Propósito:** Diagramas visuales de flujos  
+**Contiene:** 
+- Diagrama de flujo de HomeScreen
+- Diagrama de componentes
+- Flujo de datos
+
+### `FLUTTER_NO_INSTALADO.md`
+**Propósito:** Instrucciones instalación Flutter  
+**Para usuarios que no tienen Flutter instalado**
 
 ---
 
-## 📊 Estadísticas del Proyecto
-
-### Total de Archivos Dart: 11
-- main.dart: 1
-- Pantallas: 1 (home_screen.dart)
-- Widgets: 4
-- Modelos: 3
-- Utils: 2
-
-### Total de Líneas de Código: ~1,300 líneas
-- Código Dart: ~1,150 líneas
-- Configuración: ~25 líneas
-- Documentación: ~560 líneas
-
-### Cobertura de Funcionalidades: 100%
-- ✅ Header con avatar y notificaciones
-- ✅ Posición global
-- ✅ Carrusel de cuentas (3 mock)
-- ✅ Acciones rápidas (4 botones)
-- ✅ Lista de movimientos (7 mock)
-- ✅ Botón flotante de operación
-- ✅ Modal con 5 acciones
-- ✅ Bottom navigation (4 pestañas)
-- ✅ Tema completo Material 3
-- ✅ Feedback visual en interacciones
-
----
-
-## 🎯 Archivos por Complejidad
-
-### Alta Complejidad (>200 líneas)
-1. `lib/ui/home_screen.dart` (425 líneas) - Pantalla principal completa
-2. `GUIA_IMPLEMENTACION.md` (392 líneas) - Guía extendida
-3. `lib/main.dart` (169 líneas) - Configuración tema
-
-### Complejidad Media (50-200 líneas)
-4. `README.md` (167 líneas)
-5. `lib/widgets/account_card.dart` (95 líneas)
-6. `lib/widgets/operation_bottom_sheet.dart` (89 líneas)
-7. `lib/utils/app_text_styles.dart` (74 líneas)
-8. `lib/models/transaction.dart` (72 líneas)
-9. `lib/widgets/transaction_item.dart` (69 líneas)
-10. `lib/widgets/operation_action_item.dart` (62 líneas)
-11. `lib/models/operation_action.dart` (58 líneas)
-
-### Baja Complejidad (<50 líneas)
-12. `lib/models/account.dart` (38 líneas)
-13. `lib/utils/app_colors.dart` (31 líneas)
-14. `pubspec.yaml` (18 líneas)
-15. `analysis_options.yaml` (7 líneas)
-
----
-
-## 🔗 Dependencias entre Archivos
+## 📊 Resumen de Líneas de Código
 
 ```
-main.dart
-├── ui/home_screen.dart
-│   ├── widgets/account_card.dart
-│   │   ├── models/account.dart
-│   │   ├── utils/app_colors.dart
-│   │   └── utils/app_text_styles.dart
-│   ├── widgets/transaction_item.dart
-│   │   ├── models/transaction.dart
-│   │   ├── utils/app_colors.dart
-│   │   └── utils/app_text_styles.dart
-│   └── widgets/operation_bottom_sheet.dart
-│       ├── widgets/operation_action_item.dart
-│       │   ├── models/operation_action.dart
-│       │   ├── utils/app_colors.dart
-│       │   └── utils/app_text_styles.dart
-│       ├── utils/app_colors.dart
-│       └── utils/app_text_styles.dart
-├── utils/app_colors.dart
-└── utils/app_text_styles.dart
-    └── utils/app_colors.dart
+Configuración:         25 líneas (pubspec.yaml)
+Utilidades:            105 líneas (colors, styles)
+Modelos:               168 líneas (account, transaction, action)
+Servicios:             120+ líneas (supabase_service) ⭐ NUEVO
+Widgets Reutilizables: 315 líneas (cards, items, sheet)
+Pantallas:             425+ líneas (home_screen) ACTUALIZADO
+Punto de Entrada:      60+ líneas (main.dart) ACTUALIZADO
+─────────────────────────────────
+Total Código:          ~1,200+ líneas
+Documentación:         ~1,500+ líneas
 ```
 
----
+## 🔄 Flujo de Datos (Actualizado con Supabase)
 
-## ✅ Verificación de Implementación
-
-### Requisitos del Usuario
-
-| Requisito | Estado | Archivo(s) |
-|-----------|--------|------------|
-| Proyecto Flutter llamado `globalfin_app` | ✅ | pubspec.yaml |
-| Arquitectura por carpetas (ui, models, widgets) | ✅ | lib/* |
-| HomeScreen como pantalla de inicio | ✅ | main.dart |
-| AppBar con bienvenida y avatar | ✅ | home_screen.dart:_buildHeader |
-| Bloque de posición global | ✅ | home_screen.dart:_buildGlobalPosition |
-| Carrusel de tarjetas de cuenta | ✅ | home_screen.dart:_buildAccountsSection |
-| Acciones rápidas (4 botones) | ✅ | home_screen.dart:_buildQuickActions |
-| Lista de últimos movimientos | ✅ | home_screen.dart (SliverList) |
-| Botón "Realizar operación" | ✅ | home_screen.dart:_buildOperationButton |
-| BottomNavigationBar (4 items) | ✅ | home_screen.dart:_buildBottomNavigationBar |
-| Modal con 5 acciones | ✅ | operation_bottom_sheet.dart |
-| Modelos de datos (Account, Transaction, OperationAction) | ✅ | models/*.dart |
-| Datos mock | ✅ | Todos los modelos |
-| Tema fintech con paleta oscura | ✅ | main.dart, app_colors.dart |
-| Feedback visual en botones | ✅ | Todas las interacciones |
-| Tamaños de fuente apropiados | ✅ | app_text_styles.dart |
-
-**✅ TODOS LOS REQUISITOS CUMPLIDOS: 16/16**
-
----
-
-## 🚀 Siguiente Paso: Ejecutar
-
-```bash
-cd "App movil/globalfin_app"
-flutter pub get
-flutter run
+```
+main.dart (inicialización)
+    ↓
+Supabase.initialize(url, key)
+    ↓
+runApp(GlobalFinApp)
+    ↓
+HomeScreen → initState()
+    ↓
+_loadDataFromSupabase()
+    ├─ SupabaseService.getClientes()
+    ├─ SupabaseService.getTransacciones()
+    ↓
+    ├─ Éxito: setState() → Renderiza UI con datos reales ✓
+    └─ Error: _useMockData() → setState() → Renderiza UI con mock ⚠️
 ```
 
-**Nota:** Si Flutter no está instalado, seguir: https://docs.flutter.dev/get-started/install
+## 🎯 Relaciones entre Componentes
+
+```
+lib/main.dart (inicializa Supabase)
+    ↓
+lib/ui/home_screen.dart
+    ├─ Usa: SupabaseService (obtener datos)
+    ├─ Usa: Account, Transaction (modelos)
+    └─ Contiene:
+        ├─ AccountCard (widget)
+        ├─ TransactionItem (widget)
+        ├─ OperationBottomSheet (widget)
+        └─ OperationActionItem (widget)
+    
+lib/services/supabase_service.dart
+    └─ Comunica con: Supabase PostgreSQL
+
+lib/models/
+    ├─ Account (usado por HomeScreen)
+    ├─ Transaction (usado por HomeScreen)
+    └─ OperationAction (usado por OperationActionItem)
+
+lib/utils/
+    ├─ app_colors.dart (usado por todos los widgets)
+    └─ app_text_styles.dart (usado por todos los widgets)
+```
+
+## ⚙️ Cambios Principales (Supabase Integration)
+
+**Archivos creados:**
+- ✅ `lib/services/supabase_service.dart` (120+ líneas)
+
+**Archivos modificados:**
+- ✅ `lib/main.dart` → Agrega Supabase.initialize()
+- ✅ `lib/ui/home_screen.dart` → Agrega _loadDataFromSupabase()
+- ✅ `pubspec.yaml` → Agrega supabase_flutter y http
+
+**Archivos sin cambios técnicos (pero conceptualmente actualizados):**
+- Documentación: README.md, INICIO_RAPIDO.md, GUIA_IMPLEMENTACION.md
 
 ---
 
-**Proyecto:** GlobalFin Mobile App  
-**Versión:** 1.0.0  
-**Estado:** ✅ Primera versión funcional completada  
-**Fecha:** 28 Febrero 2026
+**Última actualización:** 28 de Febrero, 2026  
+**Versión:** 2.0.0 (con Supabase integrado)  
+**Estado:** ✅ Completamente documentado

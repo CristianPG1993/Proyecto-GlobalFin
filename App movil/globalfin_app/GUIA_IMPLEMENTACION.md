@@ -5,40 +5,73 @@
 ```
 App movil/globalfin_app/
 ├── lib/
-│   ├── main.dart                          # Punto de entrada + tema
+│   ├── main.dart                          # Punto de entrada + inicialización Supabase
 │   ├── ui/
-│   │   └── home_screen.dart              # Pantalla principal (380 líneas)
-│   ├── widgets/                          # Componentes reutilizables
+│   │   └── home_screen.dart              # Pantalla principal (con carga de datos real)
+│   ├── services/                         # ⭐ NUEVO
+│   │   └── supabase_service.dart         # Cliente REST para Supabase
+│   ├── widgets/
 │   │   ├── account_card.dart             # Tarjeta de cuenta con gradiente
 │   │   ├── transaction_item.dart         # Ítem de movimiento
 │   │   ├── operation_action_item.dart    # Ítem de acción
 │   │   └── operation_bottom_sheet.dart   # Modal de operaciones
-│   ├── models/                           # Modelos de datos
+│   ├── models/
 │   │   ├── account.dart                  # Cuenta bancaria
 │   │   ├── transaction.dart              # Transacción/Movimiento
 │   │   └── operation_action.dart         # Acción de operación
-│   └── utils/                            # Utilidades
+│   └── utils/
 │       ├── app_colors.dart               # Paleta de colores
 │       └── app_text_styles.dart          # Estilos de texto
-├── pubspec.yaml                          # Dependencias Flutter
+├── pubspec.yaml                          # Dependencias Flutter + Supabase
 ├── analysis_options.yaml                 # Reglas de linting
 └── README.md                             # Documentación completa
 ```
 
 ## 🎨 Componentes Clave Implementados
 
-### 1. HomeScreen (Pantalla Principal)
+### 1. HomeScreen (Pantalla Principal - ACTUALIZADA)
 
-Componentes visuales:
+**Componentes visuales:**
 - ✅ **Header con gradiente** → Avatar + "Hola, [Nombre]" + Notificaciones
-- ✅ **Posición Global** → Card blanca con saldo total grande
-- ✅ **Carrusel de Cuentas** → ListView horizontal, tarjetas oscuras con gradiente
-- ✅ **Acciones Rápidas** → 4 botones circulares (Enviar, Escanear, Recibos, Más)
-- ✅ **Lista de Movimientos** → Items con icono + texto + importe coloreado
-- ✅ **Botón Flotante** → "Realizar operación" con sombra y elevación
-- ✅ **BottomNavigationBar** → 4 pestañas (Inicio activo)
+- ✅ **Posición Global** → Card blanca con saldo **cargado desde Supabase**
+- ✅ **Carrusel de Cuentas** → ListView con datos reales de BD
+- ✅ **Acciones Rápidas** → 4 botones circulares
+- ✅ **Lista de Movimientos** → Items con datos sincronizados
+- ✅ **Loading Indicator** → Muestra progreso entre init y carga
+- ✅ **Botón Flotante** → "Realizar operación"
+- ✅ **BottomNavigationBar** → 4 pestañas
 
-### 2. Modal de Operaciones
+**Flujo de datos (NUEVO):**
+```dart
+initState()
+  └─> _loadDataFromSupabase()
+      ├─> SupabaseService.getClientes()   // Carga async
+      └─> SupabaseService.getTransacciones()
+          ├─ Éxito → setState() + render datos reales
+          └─ Error → _useMockData() + fallback
+```
+
+### 2. Servicio Supabase (NUEVO)
+
+**Archivo:** `lib/services/supabase_service.dart`
+
+```dart
+class SupabaseService {
+  // Credenciales (pre-configuradas)
+  static const String url = 'https://etlqpvghtqiqofepukqf.supabase.co';
+  static const String anonKey = 'eyJhbGci...';
+  
+  // Métodos disponibles
+  static Future<List<Map<String, dynamic>>> getClientes()
+  static Future<List<Map<String, dynamic>>> getTransacciones()
+  static Future<List<Map<String, dynamic>>> getOperaciones()
+  static Future<List<Map<String, dynamic>>> getTransaccionesPorCliente(id)
+  static Future<bool> crearOperacion(data)
+  static Future<bool> actualizarEstadoOperacion(id, estado)
+}
+```
+
+### 3. Modal de Operaciones
 
 Al pulsar "Realizar operación":
 - ✅ Bottom sheet ocupa 75% de la pantalla
@@ -48,12 +81,42 @@ Al pulsar "Realizar operación":
 - ✅ Botón "Cancelar" en la parte inferior
 - ✅ Feedback con SnackBar al seleccionar
 
-### 3. Sistema de Datos Mock
+### 4. Sistema de Datos
 
-Datos incluidos:
-- **3 cuentas** con saldos y variación mensual
-- **7 transacciones** (mix de gastos e ingresos)
-- **5 acciones** disponibles en el modal
+**Antes (mock):**
+```dart
+List<Account> _accounts = Account.getMockAccounts();
+```
+
+**Ahora (Supabase + fallback):**
+```dart
+List<Account> _accounts = []; // Vacío inicialmente
+bool _isLoading = true;
+
+@override
+void initState() {
+  _loadDataFromSupabase();
+}
+
+Future<void> _loadDataFromSupabase() async {
+  try {
+    final cliente Data = await SupabaseService.getClientes();
+    setState(() {
+      _accounts = clientesData.map((c) => Account(...)).toList();
+      _isLoading = false;
+    });
+  } catch (e) {
+    _useMockData();
+  }
+}
+
+void _useMockData() {
+  setState(() {
+    _accounts = Account.getMockAccounts();
+    _isLoading = false;
+  });
+}
+```
 
 ## 🎨 Paleta de Colores Fintech
 
@@ -75,134 +138,51 @@ Operaciones:
 - income:   #06D6A0 (verde para ingresos)
 ```
 
-## 💡 Código de Ejemplo: Abrir Modal
+## 🔌 Cómo Integrar con tu Propio Backend
 
+### Paso 1: Cambiar Credenciales Supabase
+
+**En `lib/main.dart`:**
 ```dart
-// En cualquier widget con BuildContext:
-
-import 'package:globalfin_app/widgets/operation_bottom_sheet.dart';
-
-ElevatedButton(
-  onPressed: () {
-    OperationBottomSheet.show(context);
-  },
-  child: Text('Realizar operación'),
-)
+await Supabase.initialize(
+  url: 'TU_URL_SUPABASE',     // Cambiar aquí
+  anonKey: 'TU_ANON_KEY',     // Cambiar aquí
+);
 ```
 
-## 🔌 Cómo Extender con Backend Real
+### Paso 2: Actualizar Tablas si Cambian Nombres
 
-### Paso 1: Crear Servicio de API
-
+**En `lib/services/supabase_service.dart`:**
 ```dart
-// lib/services/account_service.dart
-import 'dart:convert';
-import 'package:http/http.dart' as http;
-import '../models/account.dart';
-
-class AccountService {
-  static const String baseUrl = 'https://api.globalfin.com';
-
-  Future<List<Account>> fetchAccounts() async {
-    final response = await http.get(
-      Uri.parse('$baseUrl/accounts'),
-      headers: {'Authorization': 'Bearer TOKEN'},
-    );
-
-    if (response.statusCode == 200) {
-      final List<dynamic> data = json.decode(response.body);
-      return data.map((json) => Account.fromJson(json)).toList();
-    } else {
-      throw Exception('Error al cargar cuentas');
-    }
-  }
-}
+// Cambiar rutas de API
+final response = await http.get(
+  Uri.parse('$url/rest/v1/tu_tabla_aqui'),  // ← Cambiar
+  headers: {...}
+);
 ```
 
-### Paso 2: Modificar Modelo Account
+### Paso 3: Modificar Conversión de Datos
 
+**En `lib/ui/home_screen.dart`:**
 ```dart
-// Agregar en lib/models/account.dart
-
-  // Factory para parsear JSON desde API
-  factory Account.fromJson(Map<String, dynamic> json) {
-    return Account(
-      id: json['id'] as String,
-      name: json['name'] as String,
-      lastDigits: json['last_digits'] as String,
-      balance: (json['balance'] as num).toDouble(),
-      monthVariation: (json['month_variation'] as num).toDouble(),
-    );
-  }
-
-  // Convertir a JSON para enviar a API
-  Map<String, dynamic> toJson() {
-    return {
-      'id': id,
-      'name': name,
-      'last_digits': lastDigits,
-      'balance': balance,
-      'month_variation': monthVariation,
-    };
-  }
+_accounts = clientesData.map((cliente) {
+  return Account(
+    id: cliente['tu_campo_id'] ?? '',      // ← Ajustar campos
+    nombre: cliente['tu_campo_nombre'] ?? '',
+    balance: double.tryParse(...) ?? 0.0,
+  );
+}).toList();
 ```
 
-### Paso 3: Usar en HomeScreen con FutureBuilder
+### Paso 4: Test de Conexión
 
-```dart
-// En home_screen.dart
+```bash
+cd "App movil/globalfin_app"
+flutter run -d chrome
 
-FutureBuilder<List<Account>>(
-  future: AccountService().fetchAccounts(),
-  builder: (context, snapshot) {
-    if (snapshot.connectionState == ConnectionState.waiting) {
-      return CircularProgressIndicator();
-    }
-    if (snapshot.hasError) {
-      return Text('Error: ${snapshot.error}');
-    }
-    final accounts = snapshot.data ?? [];
-    return ListView.builder(
-      itemCount: accounts.length,
-      itemBuilder: (context, index) {
-        return AccountCard(account: accounts[index]);
-      },
-    );
-  },
-)
-```
-
-## 📦 Dependencias a Agregar (Futuro)
-
-Para conectar con backend real, agregar en `pubspec.yaml`:
-
-```yaml
-dependencies:
-  flutter:
-    sdk: flutter
-  
-  # HTTP
-  http: ^1.1.0
-  
-  # State Management
-  provider: ^6.1.0
-  # O alternativamente:
-  # flutter_bloc: ^8.1.0
-  # riverpod: ^2.4.0
-  
-  # Almacenamiento local
-  shared_preferences: ^2.2.0
-  
-  # Secure storage (tokens)
-  flutter_secure_storage: ^9.0.0
-  
-  # JSON serialization
-  json_annotation: ^4.8.0
-
-dev_dependencies:
-  # JSON code generation
-  build_runner: ^2.4.0
-  json_serializable: ^6.7.0
+# En la consola F12, deberías ver:
+✓ Conexión a Supabase exitosa
+✓ Se obtuvieron X clientes
 ```
 
 ## 🧪 Testing (Próximo Paso)
@@ -216,7 +196,7 @@ test/
 │   │   ├── account_test.dart
 │   │   └── transaction_test.dart
 │   └── services/
-│       └── account_service_test.dart
+│       └── supabase_service_test.dart    # ⭐ NUEVO
 ├── widget/
 │   ├── account_card_test.dart
 │   ├── transaction_item_test.dart
@@ -225,30 +205,37 @@ test/
     └── home_screen_test.dart
 ```
 
+**Test de Supabase:**
+```dart
+test('getClientes retorna lista no vacía', () async {
+  final clientes = await SupabaseService.getClientes();
+  expect(clientes, isNotEmpty);
+  expect(clientes[0]['nombre'], isNotNull);
+});
+```
+
 ## 🚀 Comandos Rápidos
 
 ```bash
 # Navegar al proyecto
 cd "App movil/globalfin_app"
 
-# Instalar dependencias
+# Instalar dependencias (incluyendo Supabase)
 flutter pub get
 
-# Ejecutar app
+# Ejecutar aplicación
 flutter run
 
-# Ejecutar en dispositivo específico
-flutter run -d chrome          # Web
-flutter run -d "iPhone 15"     # iOS Simulator
-flutter run -d emulator-5554   # Android Emulator
+# Ejecutar en navegador (recomendado para desarrollo)
+flutter run -d chrome
 
 # Hot reload durante desarrollo
-# Presiona 'r' en la terminal mientras corre
+# Presiona 'r' en la terminal
 
-# Hot restart completo
+# Hot restart (reinicia todo)
 # Presiona 'R' en la terminal
 
-# Limpiar build
+# Limpiar y reinstalar
 flutter clean && flutter pub get
 
 # Analizar código
@@ -257,10 +244,14 @@ flutter analyze
 # Formatear código
 dart format lib/
 
-# Build para producción
-flutter build apk --release     # Android
-flutter build ios --release     # iOS
-flutter build web --release     # Web
+# Build para producción (web)
+flutter build web --release
+
+# Build para Android
+flutter build apk --release
+
+# Build para iOS
+flutter build ios --release
 ```
 
 ## 🎯 Checklist de Funcionalidades
@@ -273,86 +264,145 @@ flutter build web --release     # Web
 - [x] Modal de operaciones con 5 acciones
 - [x] Sistema de colores y estilos
 - [x] Tema Material Design 3 configurado
-- [x] Datos mock para demostración
-- [x] Navegación bottom bar
-- [x] Feedback visual en interacciones
+- **[x] Integración Supabase** ⭐ NUEVO
+- **[x] Carga automática de datos reales** ⭐ NUEVO
+- **[x] Fallback a datos mock** ⭐ NUEVO
+- [x] Datos mock como respaldo
 
 ### 📋 Pendiente (Sugerencias)
 - [ ] Navegación completa entre secciones
 - [ ] Pantalla de detalle de transacción
 - [ ] Flujos completos de operaciones
-- [ ] Autenticación y login
-- [ ] Integración con backend
-- [ ] State management (Provider/Bloc)
+- [ ] Autenticación con JWT personalizado
+- [ ] Sincronización offline-first
+- [ ] State management avanzado (Provider/Bloc)
 - [ ] Tests unitarios y de integración
 - [ ] Animaciones y transiciones
 - [ ] Localización (i18n)
-- [ ] Modo oscuro
+- [ ] Tema oscuro
 
 ## 📱 Capturas de Pantalla Disponibles
 
 Wireframes en: `App movil/`
-- `low fidelity home.png`
-- `low fidelity reealizar operacion.png`
-- `high fidelity inicio app.png`
-- `high fidelity app.png`
+- `low fidelity home.png` - Estructura base
+- `low fidelity realizar operacion.png` - Modal
+- `high fidelity inicio app.png` - Versión estilizada
+- `high fidelity app.png` - Versión final
 
 ## 🆘 Solución de Problemas Comunes
 
+### Error: "Conexión a Supabase rechazada"
+**Causes posibles:**
+- Credenciales incorrectas en main.dart
+- Base de datos Supabase no activa
+- Sin conectividad a internet
+
+**Solución:**
+```bash
+# La app automáticamente usa datos mock
+# Verifica en consola: ⚠ Error cargando desde Supabase
+# Usa datos mock como fallback
+```
+
+### Error: "No se cargan datos reales"
+**Posibles causas:**
+1. Nombres de tablas incorrectos (clientes, transacciones)
+2. Tabla vacía en Supabase
+3. Permisos RLS demasiado restrictivos
+
+**Solución:**
+```bash
+# Verifica en Supabase:
+# 1. Ir a SQL Editor
+# 2. SELECT * FROM clientes; -- Debe retornar registros
+# 3. Verificar RLS: deshabilitar para desarrollo
+```
+
 ### Error: "SDK version"
 ```bash
-# Asegúrate de tener Flutter 3.0+
-flutter --version
-flutter upgrade
-```
-
-### Error: "Gradle build failed" (Android)
-```bash
-cd android
-./gradlew clean
-cd ..
-flutter clean
-flutter pub get
-```
-
-### Error: "CocoaPods not installed" (iOS)
-```bash
-sudo gem install cocoapods
-cd ios
-pod install
-cd ..
+flutter --version          # Ver versión
+flutter upgrade            # Actualizar
 ```
 
 ### Hot reload no funciona
 ```bash
-# Restart completo
-Presiona 'R' en la terminal
-
-# Si persiste, parar y reiniciar
+# Presiona 'R' para restart completo
+# Si persiste, parar y reiniciar:
 flutter run
 ```
 
 ## 📚 Recursos de Aprendizaje
 
 - **Flutter Docs**: https://docs.flutter.dev
+- **Supabase Docs**: https://supabase.com/docs
 - **Material Design 3**: https://m3.material.io
 - **Dart Language**: https://dart.dev
 - **Flutter Widget Catalog**: https://docs.flutter.dev/ui/widgets
-- **Flutter Layout Cheat Sheet**: https://medium.com/flutter-community/flutter-layout-cheat-sheet-5363348d037e
+
+## 🔐 Seguridad en Producción
+
+**Para deploy a producción:**
+
+1. ✅ Usar **anon key** público (solo lectura) - ACTUAL
+2. ✅ Configurar **RLS policies** en Supabase
+3. ✅ Validar datos en el servidor (no confiar en cliente)
+4. ✅ Usar **HTTPS** (siempre)
+5. ⚠️ NO incluir credenciales privadas en código
+6. ⚠️ NO exponer URL privada de BD
+
+## 🌐 Despliegue en Producción
+
+### Vercel (Recomendado - Actualizado)
+
+La app se **despliegue automáticamente en Vercel** con estos pasos:
+
+```bash
+# 1. Compilar build de web
+flutter build web --release
+
+# 2. Verificar que build esté en /public/
+ls public/             # Debe mostrar index.html
+
+# 3. Commit y push
+git add .
+git commit -m "feat: Actualización Supabase"
+git push origin main   # Vercel auto-deploya
+
+# 4. Acceder en navegador
+# https://proyecto-globalfin.vercel.app
+```
+
+**Build incluye:**
+- ✅ Código compilado (minificado)
+- ✅ Assets (imágenes, fonts)
+- ✅ Credenciales Supabase (anon key - public OK)
+- ✅ Fallback a datos mock
 
 ## 👥 Contribuir
 
-Este es un proyecto base modular. Para extenderlo:
+Para extender este proyecto:
 
-1. Crear nuevas pantallas en `lib/ui/`
-2. Agregar widgets reutilizables en `lib/widgets/`
-3. Definir modelos en `lib/models/`
-4. Crear servicios en `lib/services/`
-5. Mantener la paleta de colores consistente
+1. **Crear nuevas pantallas** en `lib/ui/`
+2. **Agregar servicios** en `lib/services/` (ej: auth, payments)
+3. **Nuevos widgets** en `lib/widgets/`
+4. **Modelos** en `lib/models/`
+5. **Mantener paleta de colores** consistente
+
+**Workflow sugerido:**
+```bash
+git checkout -b feature/nueva-funcionalidad
+# ... desarrollar ...
+git add .
+git commit -m "feat: descripción"
+git push origin feature/nueva-funcionalidad
+# Crear PR en GitHub
+```
 
 ---
 
 **Proyecto:** GlobalFin Mobile App  
-**Versión:** 1.0.0  
-**Framework:** Flutter 3.0+  
-**Estado:** ✅ Primera versión funcional completada
+**Versión:** 2.0.0 (con Supabase integrado)  
+**Framework:** Flutter 3.41.2+  
+**Base de Datos:** Supabase PostgreSQL  
+**Deploy:** Vercel (automático)  
+**Estado:** ✅ Producción lista
