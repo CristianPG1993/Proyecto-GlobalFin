@@ -1,0 +1,10 @@
+com/globalfin/dashboard/model/Operation$OperationType.class
+com/globalfin/dashboard/DashboardApp.class
+com/globalfin/dashboard/model/Operation$RiskLevel.class
+com/globalfin/dashboard/data/MockDataProvider.class
+com/globalfin/dashboard/DashboardApp$2.class
+com/globalfin/dashboard/DashboardApp$1.class
+com/globalfin/dashboard/DashboardApp$3.class
+com/globalfin/dashboard/model/Operation$OperationStatus.class
+com/globalfin/dashboard/model/DashboardMetrics.class
+com/globalfin/dashboard/model/Operation.class

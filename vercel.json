@@ -1,0 +1,23 @@
+{
+  "version": 2,
+  "name": "globalfin-app",
+  "builds": [
+    {
+      "src": "App movil/globalfin_app/build/web/**",
+      "use": "@vercel/static"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "App movil/globalfin_app/build/web/$1"
+    },
+    {
+      "handle": "filesystem"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "App movil/globalfin_app/build/web/index.html"
+    }
+  ]
+}

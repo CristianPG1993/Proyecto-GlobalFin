@@ -1,0 +1,23 @@
+# Ignorar archivos innecesarios para el despliegue
+dashboard/
+docs/
+*.pdf
+*.docx
+.git/
+.github/
+*.md
+!README.md
+
+# Ignorar archivos de Flutter excepto build/web
+App movil/globalfin_app/.dart_tool/
+App movil/globalfin_app/.idea/
+App movil/globalfin_app/android/
+App movil/globalfin_app/ios/
+App movil/globalfin_app/linux/
+App movil/globalfin_app/macos/
+App movil/globalfin_app/windows/
+App movil/globalfin_app/test/
+App movil/globalfin_app/.flutter-plugins
+App movil/globalfin_app/.flutter-plugins-dependencies
+App movil/globalfin_app/.metadata
+App movil/globalfin_app/pubspec.lock

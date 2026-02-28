@@ -1,0 +1,231 @@
+/* GlobalFin Dashboard - Estilos Corporativos */
+
+.root {
+    -fx-font-family: "Segoe UI", "Arial", sans-serif;
+    -fx-font-size: 14px;
+    -fx-background-color: #f4f6f8;
+}
+
+/* Barra superior */
+.top-bar {
+    -fx-background-color: linear-gradient(to right, #1B263B, #0D1B2A);
+    -fx-border-color: #2C3E50;
+    -fx-border-width: 0 0 2 0;
+}
+
+.main-title {
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+    -fx-text-fill: white;
+}
+
+.user-label {
+    -fx-text-fill: #E8EAF6;
+    -fx-font-size: 13px;
+}
+
+.search-field {
+    -fx-background-color: white;
+    -fx-background-radius: 6px;
+    -fx-border-radius: 6px;
+    -fx-padding: 8px 12px;
+}
+
+/* Contenido central */
+.center-content {
+    -fx-background-color: #f4f6f8;
+}
+
+/* Panel de métricas */
+.metrics-panel {
+    -fx-padding: 0 0 10 0;
+}
+
+.metric-card {
+    -fx-background-color: white;
+    -fx-background-radius: 8px;
+    -fx-border-radius: 8px;
+    -fx-border-color: #dee2e6;
+    -fx-border-width: 1px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.08), 4, 0, 0, 1);
+}
+
+.metric-title {
+    -fx-font-size: 12px;
+    -fx-text-fill: #6c757d;
+}
+
+.metric-value {
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #212529;
+}
+
+.metric-primary .metric-value {
+    -fx-text-fill: #0D1B2A;
+}
+
+.metric-warning .metric-value {
+    -fx-text-fill: #ffc107;
+}
+
+.metric-danger .metric-value {
+    -fx-text-fill: #dc3545;
+}
+
+.metric-info .metric-value {
+    -fx-text-fill: #17a2b8;
+}
+
+/* Tabla de operaciones */
+.operations-table {
+    -fx-background-color: white;
+    -fx-border-color: #dee2e6;
+    -fx-border-width: 1px;
+    -fx-border-radius: 8px;
+}
+
+.operations-table .column-header {
+    -fx-background-color: #f8f9fa;
+    -fx-font-weight: bold;
+    -fx-text-fill: #495057;
+    -fx-border-color: #dee2e6;
+}
+
+.operations-table .table-row-cell {
+    -fx-border-color: transparent #dee2e6 #dee2e6 transparent;
+    -fx-border-width: 1px;
+}
+
+.operations-table .table-row-cell:selected {
+    -fx-background-color: #e7f3ff;
+    -fx-text-fill: #212529;
+}
+
+.operations-table .table-row-cell:hover {
+    -fx-background-color: #f8f9fa;
+}
+
+.operations-table .table-cell {
+    -fx-padding: 8px;
+}
+
+/* Panel derecho */
+.right-panel {
+    -fx-background-color: white;
+    -fx-border-color: #dee2e6;
+    -fx-border-width: 0 0 0 1;
+}
+
+.panel-title {
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #212529;
+}
+
+.selected-operation-label {
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #0D1B2A;
+    -fx-padding: 8px;
+    -fx-background-color: #e7f3ff;
+    -fx-background-radius: 6px;
+}
+
+.section-label {
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #495057;
+}
+
+/* Botones */
+.action-button {
+    -fx-background-color: #2EC4B6;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-background-radius: 6px;
+    -fx-padding: 10px 20px;
+    -fx-cursor: hand;
+}
+
+.action-button:hover {
+    -fx-background-color: #26a89c;
+}
+
+.action-button:pressed {
+    -fx-background-color: #1e8c82;
+}
+
+.action-button-danger {
+    -fx-background-color: #dc3545;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-background-radius: 6px;
+    -fx-padding: 10px 20px;
+    -fx-cursor: hand;
+}
+
+.action-button-danger:hover {
+    -fx-background-color: #c82333;
+}
+
+.action-button-danger:pressed {
+    -fx-background-color: #bd2130;
+}
+
+/* ComboBox y campos */
+.combo-box {
+    -fx-background-color: white;
+    -fx-background-radius: 6px;
+    -fx-border-color: #ced4da;
+    -fx-border-radius: 6px;
+}
+
+.text-area {
+    -fx-background-color: white;
+    -fx-border-color: #ced4da;
+    -fx-border-radius: 6px;
+    -fx-background-radius: 6px;
+    -fx-padding: 8px;
+}
+
+.text-area:focused {
+    -fx-border-color: #2EC4B6;
+    -fx-border-width: 2px;
+}
+
+/* Separadores */
+.separator {
+    -fx-background-color: #dee2e6;
+}
+
+/* Labels generales */
+.label {
+    -fx-text-fill: #495057;
+}
+
+.total-label {
+    -fx-font-weight: bold;
+    -fx-text-fill: #212529;
+}
+
+/* Diálogos */
+.dialog-pane {
+    -fx-background-color: white;
+}
+
+.dialog-pane .header-panel {
+    -fx-background-color: #f8f9fa;
+}
+
+.dialog-pane .button {
+    -fx-background-color: #2EC4B6;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-background-radius: 6px;
+    -fx-padding: 8px 16px;
+}
+
+.dialog-pane .button:hover {
+    -fx-background-color: #26a89c;
+}
