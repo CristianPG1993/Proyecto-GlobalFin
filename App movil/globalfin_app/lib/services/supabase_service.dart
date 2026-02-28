@@ -1,5 +1,5 @@
+import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import '../models/account.dart';
 import '../models/transaction.dart';
 
 class SupabaseService {
@@ -50,13 +50,20 @@ class SupabaseService {
           .eq('id_cliente', clienteId);
 
       return (response as List)
-          .map((e) => Transaction(
-            id: e['id'] ?? 'unknown',
-            descripcion: e['descripcion'] ?? 'Transacción',
-            monto: double.tryParse(e['monto'].toString()) ?? 0.0,
-            fecha: e['fecha'] ?? DateTime.now().toString(),
-            tipo: e['tipo'] ?? 'Transferencia',
-          ))
+          .map((e) {
+            final rawTipo = (e['tipo'] ?? '').toString().toLowerCase();
+            final isExpense = rawTipo.contains('gasto') || rawTipo.contains('debito') || rawTipo.contains('retiro');
+            final amount = double.tryParse((e['monto'] ?? 0).toString()) ?? 0.0;
+
+            return Transaction(
+              id: (e['id'] ?? 'unknown').toString(),
+              title: (e['descripcion'] ?? 'Transacción').toString(),
+              date: (e['fecha'] ?? DateTime.now().toIso8601String()).toString(),
+              amount: amount.abs(),
+              type: isExpense ? TransactionType.expense : TransactionType.income,
+              icon: isExpense ? Icons.arrow_upward : Icons.arrow_downward,
+            );
+          })
           .toList();
     } catch (e) {
       print('Error fetching transacciones por cliente: $e');

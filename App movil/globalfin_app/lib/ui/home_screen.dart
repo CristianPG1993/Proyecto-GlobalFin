@@ -38,12 +38,11 @@ class _HomeScreenState extends State<HomeScreen> {
         setState(() {
           _accounts = clientesData.map((cliente) {
             return Account(
-              id: cliente['id'] ?? '',
-              nombre: '${cliente['nombre'] ?? ''} ${cliente['apellido'] ?? ''}',
-              tipo: 'Cuenta Principal',
+              id: (cliente['id'] ?? '').toString(),
+              name: '${cliente['nombre'] ?? ''} ${cliente['apellido'] ?? ''}'.trim(),
+              lastDigits: ((cliente['id'] ?? '0000').toString()).padLeft(4, '0').substring((((cliente['id'] ?? '0000').toString()).padLeft(4, '0').length - 4)),
               balance: double.tryParse(cliente['saldo']?.toString() ?? '0') ?? 0.0,
-              icono: Icons.account_balance_wallet,
-              color: AppColors.primary,
+              monthVariation: 0.0,
             );
           }).toList();
         });
@@ -57,12 +56,17 @@ class _HomeScreenState extends State<HomeScreen> {
         // Convertir transacciones
         setState(() {
           _transactions = transaccionesData.map((trx) {
+            final monto = double.tryParse(trx['monto']?.toString() ?? '0') ?? 0.0;
+            final rawTipo = (trx['tipo'] ?? '').toString().toLowerCase();
+            final isExpense = rawTipo.contains('gasto') || rawTipo.contains('debito') || rawTipo.contains('retiro');
+
             return Transaction(
-              id: trx['id'] ?? '',
-              descripcion: trx['descripcion'] ?? 'Transacción',
-              monto: double.tryParse(trx['monto']?.toString() ?? '0') ?? 0.0,
-              fecha: trx['fecha'] ?? DateTime.now().toString(),
-              tipo: trx['tipo'] ?? 'Transfer',
+              id: (trx['id'] ?? '').toString(),
+              title: (trx['descripcion'] ?? 'Transacción').toString(),
+              amount: monto.abs(),
+              date: (trx['fecha'] ?? DateTime.now().toIso8601String()).toString(),
+              type: isExpense ? TransactionType.expense : TransactionType.income,
+              icon: isExpense ? Icons.arrow_upward : Icons.arrow_downward,
             );
           }).toList();
         });
